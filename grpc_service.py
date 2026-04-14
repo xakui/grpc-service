@@ -18,6 +18,9 @@ from cerence.cloudservices.domain.results.nlu.v1 import domain_results_pb2 as nl
 from cerence.cloudservices.domain.results.pa.v1 import domain_results_pb2 as pa_results_pb2
 from cerence.cloudservices.domain.results.stock.v1 import domain_results_pb2 as stock_results_pb2
 from cerence.cloudservices.domain.results.ude.v1 import domain_results_pb2 as ude_results_pb2
+from cerence.cloudservices.domain.results.communication.v1 import domain_results_pb2 as communication_results_pb2
+from cerence.cloudservices.domain.results.creative_work.v1 import domain_results_pb2 as creative_work_results_pb2
+from cerence.cloudservices.domain.results.sing.v1 import domain_results_pb2 as sing_results_pb2
 from cerence.cloudservices.domain.results.weather.v1 import domain_results_pb2 as weather_results_pb2
 from google.type import latlng_pb2
 from google.protobuf import wrappers_pb2
@@ -99,6 +102,10 @@ class GrpcClient:
         ude_results_pb2.UdeResponse.DESCRIPTOR.full_name: ude_results_pb2.UdeResponse,
         ude_results_pb2.TrafficResponse.DESCRIPTOR.full_name: ude_results_pb2.TrafficResponse,
         media_results_pb2.MediaResponse.DESCRIPTOR.full_name: media_results_pb2.MediaResponse,
+        communication_results_pb2.CommunicationResponse.DESCRIPTOR.full_name: communication_results_pb2.CommunicationResponse,
+        creative_work_results_pb2.CreativeWorkResponse.DESCRIPTOR.full_name: creative_work_results_pb2.CreativeWorkResponse,
+        sing_results_pb2.SingResponse.DESCRIPTOR.full_name: sing_results_pb2.SingResponse,
+        dialog_results_pb2.PlugAndPlayDialogStreamingResponseStart.DESCRIPTOR.full_name: dialog_results_pb2.PlugAndPlayDialogStreamingResponseStart,
     }
 
     def __init__(
@@ -442,7 +449,7 @@ class GrpcService:
 
 def main():
     grpc_service = GrpcService()
-    grpc_service.query("find nearest gas station")
+    grpc_service.query("tell me a story")
 
 
 if __name__ == '__main__':
