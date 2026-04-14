@@ -1,9 +1,10 @@
 """
-# @Time    : 10/23/2024
+# @Time    : 04/14/2026
 # @Author  : kui.xiao
 # @Description
 
 """
+import json
 
 import requests
 import grpc
@@ -216,7 +217,7 @@ class GrpcClient:
             metadata.append(('cerence-session-convmgr-routing', self.session_convmgr_routing))
         return metadata
 
-    def _invoke_grpc(self, utterance):
+    def _invoke_grpc(self, utterance, interaction_history):
         self._ensure_token_validity()
 
         # req = text_api.TextQueryRequest(
@@ -224,66 +225,7 @@ class GrpcClient:
         #     user_id='llm-team-demo',
         #     device_id='llm-team-demo-device'
         # )
-        interaction_history=[
-            {
-                "references": [
-                    {
-                        "refer_type":
-                            {
-                                "type": "TYPE_REF_THING",
-                                "sub_types": ["SPORT_STAT"]
-                            },
-                        "value": "Goals",
-                        "name": "stat",
-                        "canonical": "goals",
-                        "source": "SOURCE_EXPLICIT"
-                    },
-                    {
-                        "refer_type":
-                            {
-                                "type": "TYPE_REF_THING",
-                                "sub_types": ["SPORT_TEAM"]
-                            },
-                        "value": "Liverpool",
-                        "name": "team",
-                        "source": "SOURCE_EXPLICIT"
-                    },
-                    {
-                        "refer_type":
-                            {
-                                "type": "TYPE_REF_THING",
-                                "sub_types": ["RECENCY"]
-                            },
-                        "value": "Last",
-                        "name": "recency",
-                        "canonical": "latest",
-                        "source": "SOURCE_EXPLICIT"
-                    },
-                    {
-                        "refer_type":
-                            {
-                                "type": "TYPE_REF_THING",
-                                "sub_types": ["SPORT_GAME_KEYWORD"]
-                            },
-                        "value": "Match",
-                        "name": "game_keyword",
-                        "canonical": "singular",
-                        "source": "SOURCE_EXPLICIT"
-                    },
-                    {
-                        "refer_type": {},
-                        "value": "Liverpool F.C. has 10 goals.",
-                        "name": "SYSTEM_PROMPT",
-                        "source": "SOURCE_ANSWER"
-                    }
-                ],
-                "domain": "sports",
-                "intent": "sports:get_past:stat",
-                "input_type": "INPUT_TYPE_SPEECH",
-                "time_stamp": datetime.datetime(2026, 3, 24, 4, 40, 7, 864000, tzinfo=datetime.timezone.utc),
-                "alternatives": "How many goals Liverpool got in the last match"
-            }
-        ]
+        interaction_history=interaction_history
         req = text_api.TextQueryRequest(
             input_text=utterance,
             interaction_history=interaction_history,
@@ -412,8 +354,8 @@ class GrpcClient:
 
         return grpc_result
 
-    def query(self, utterance: str):
-        grpc_rst, session_id = self._invoke_grpc(utterance)
+    def query(self, utterance: str, interaction_history):
+        grpc_rst, session_id = self._invoke_grpc(utterance, interaction_history)
         if not grpc_rst:
             logger.error("request", "gRPC result is empty")
             return {}
@@ -440,16 +382,22 @@ class GrpcService:
     def __init__(self):
         self.grpc_client = GrpcClient(**grpc_config)
 
-    def query(self, utterance):
-        grpc_results = self.grpc_client.query(utterance)
-        print(grpc_results)
+    def query(self, utterance, interaction_history):
+        grpc_results = self.grpc_client.query(utterance, interaction_history)
+        results = json.dumps(grpc_results, indent=4)
+        print(results)
+        return grpc_results
         logger.trace("query", f"{grpc_results}")
 
 
 
 def main():
     grpc_service = GrpcService()
-    grpc_service.query("tell me a story")
+    interaction_history = []
+    results = grpc_service.query("How many goals Liverpool got in the last match", interaction_history)
+    interaction_history = results["interactionHistory"]
+    results = grpc_service.query("are you sure", interaction_history)
+
 
 
 if __name__ == '__main__':
