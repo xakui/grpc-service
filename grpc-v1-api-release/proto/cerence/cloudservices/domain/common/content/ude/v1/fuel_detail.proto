@@ -1,0 +1,123 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.ude.v1;
+
+import "cerence/cloudservices/domain/common/content/common/v1/common_detail.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/ude/v1";
+option java_multiple_files = true;
+option java_outer_classname = "FuelDetailProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.ude.v1";
+
+message FuelDetail {
+  //  The brand of fuel available at the place.
+  Brand brand = 1;
+
+  message Brand {
+    string provider = 1;
+  }
+
+  // Container for an array of payment method details for this place. Zero or more payment elements are included.
+  repeated cerence.cloudservices.domain.common.content.common.v1.Payments payments = 2;
+
+  // Container for the pricing details for this place. Zero or more priceRate elements are included.
+  repeated PriceRates price_rates = 3;
+
+  // A comma-delimited list of strings that describe a feature of the place. Possible values are as follows:
+  // AIR_PUMP
+  // ATM
+  // BABY_CHANGE_ROOM
+  // BIKE_STORAGE_RACK
+  // CAR_CAMPING_AREA
+  // CAR_WASH
+  // CHARGING_STATION
+  // CONVENIENCE_STORE
+  // FOOD
+  // FOOD_FOR_HERE
+  // GROCERY_STORE
+  // REPAIR_SHOP
+  // SELL_ALCOHOL
+  // SHOWER
+  // TOILET
+  repeated string features = 4;
+}
+
+
+message PriceRates {
+  // Details of the fuel type associated with this price rate.
+  FuelType fuel_type = 1;
+
+  // A container for details of the currency.
+  cerence.cloudservices.domain.common.content.common.v1.Currency currency = 2;
+
+  // Specifies whether this price rate is per liter or per gallon. Possible values include the following:
+  // LITER
+  // US_GALLON
+  string unit = 3;
+
+  // The rate per unit.
+  double rate = 4;
+}
+
+message FuelType {
+  // The code for the type of fuel.
+  // This is a normalized list for data returned from all third-party providers.
+  enum FuelCode {
+    // No value has been specified.
+    FUEL_CODE_UNSPECIFIED = 0;
+    // Used for return value only. Represents value unknown in this
+    // version.
+
+    FUEL_CODE_RESERVED_UNKNOWN = 1;
+    FUEL_CODE_BIODIESEL = 2;
+    FUEL_CODE_CNG = 3;
+    FUEL_CODE_DIESEL = 4;
+    FUEL_CODE_DIESEL_PREMIUM = 5;
+    FUEL_CODE_ELECTRIC = 6;
+    FUEL_CODE_ETHANOL = 7;
+    FUEL_CODE_GASOLINE = 8;
+    FUEL_CODE_E10 = 9;
+    FUEL_CODE_UNLEADED_MIDGRADE = 10;
+    FUEL_CODE_UNLEADED_PREMIUM = 11;
+    FUEL_CODE_UNLEADED_REGULAR = 12;
+    FUEL_CODE_UNLEADED_SUPER = 13;
+    FUEL_CODE_UNLEADED_SUPER_PLUS = 14;
+    FUEL_CODE_HYDROGEN = 15;
+    FUEL_CODE_LPG = 16;
+    FUEL_CODE_TRUCKDIESEL = 17;
+    FUEL_CODE_DIESEL_MIDGRADE = 18;
+    FUEL_CODE_E85 = 19;
+    FUEL_CODE_E10_MIDGRADE = 20;
+    FUEL_CODE_UNLEADED = 21;
+    FUEL_CODE_ETHANOL_SUPER = 22;
+    FUEL_CODE_GASOLINE_PREMIUM = 23;
+    FUEL_CODE_SP95_E10 = 24;
+    FUEL_CODE_LNG = 25;
+  }
+
+  // The code for the type of fuel.
+  FuelCode code = 1;
+
+  // The name of the third party provider of this information.
+  string provider = 2;
+}

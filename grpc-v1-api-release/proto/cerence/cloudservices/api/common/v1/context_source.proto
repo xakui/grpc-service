@@ -1,0 +1,164 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.common.v1;
+
+option go_package = "cerence/cloudservices/api/common/v1";
+option java_multiple_files = true;
+option java_outer_classname = "ContextSourceProto";
+option java_package = "com.cerence.cloudservices.api.common.v1";
+
+// These enums are used in the Context messages
+// The source of a date and time
+enum DateTimeSource {
+  DATE_TIME_SOURCE_UNSPECIFIED = 0;
+  DATE_TIME_SOURCE_MANUAL = 1; // From the user
+  DATE_TIME_SOURCE_GPS = 2; // From GPS synchronization
+  DATE_TIME_SOURCE_NITZ = 3; // From GSM NITZ mechanism or equivalent
+  DATE_TIME_SOURCE_AUTOMATIC = 4; // Set in an automatic fashion (e.g. NTP/SNTP or Hertzian source)
+  DATE_TIME_SOURCE_CCS = 5; // Set according to CCS servers
+}
+
+// A geographical coordinate source
+enum LocationSource {
+  LOCATION_SOURCE_UNSPECIFIED = 0;
+  LOCATION_SOURCE_GPS = 1; // Set by GPS
+  LOCATION_SOURCE_RECKONING = 2; // Set by dead reckoning
+  LOCATION_SOURCE_LAST_KNOWN = 3; // Set by a previous (not up to date) position
+  LOCATION_SOURCE_STATIC = 4; // Set when the location is not composed of real geo-coordinates
+}
+
+// Indicates the time format for the user. time_12hr: '9:07 AM', '12:00 AM'; time_24hr: '09:07', '00:00'. Precise separator, leading zeros, etc., subject to UI language/region.
+enum TimeExpression {
+  TIME_EXPRESSION_UNSPECIFIED = 0;
+  TIME_EXPRESSION_RESERVED_UNKNOWN = 1;
+  TIME_EXPRESSION_HR12 = 2;
+  TIME_EXPRESSION_HR24 = 3;
+  TIME_EXPRESSION_MILITARY = 4;
+}
+
+// Indicates the units to use for expressing distances and speeds. meter: metric system (meters, km, km\/h); foot: imperial system (feet, miles, mph); yard: imperial system (yard, miles, mph).
+enum DistanceExpression {
+  DISTANCE_EXPRESSION_UNSPECIFIED = 0;
+  DISTANCE_EXPRESSION_RESERVED_UNKNOWN = 1;
+  DISTANCE_EXPRESSION_METER = 2;
+  DISTANCE_EXPRESSION_FOOT = 3;
+  DISTANCE_EXPRESSION_YARD = 4;
+  DISTANCE_EXPRESSION_MARINE = 5;
+}
+
+// Indicates the units to use for expressing temperature.
+enum TemperatureExpression {
+  TEMPERATURE_EXPRESSION_UNSPECIFIED = 0;
+  TEMPERATURE_EXPRESSION_RESERVED_UNKNOWN = 1;
+  TEMPERATURE_EXPRESSION_CELSIUS = 2;
+  TEMPERATURE_EXPRESSION_FAHRENHEIT = 3;
+  TEMPERATURE_EXPRESSION_KELVIN = 4;
+}
+
+// Indicates the units to use for expressing volumes (e.g. petrol).
+enum VolumeExpression {
+  VOLUME_EXPRESSION_UNSPECIFIED = 0;
+  VOLUME_EXPRESSION_RESERVED_UNKNOWN = 1;
+  VOLUME_EXPRESSION_LITER = 2;
+  VOLUME_EXPRESSION_USGAL = 3;
+  VOLUME_EXPRESSION_IMPGAL = 4;
+}
+
+// Indicates the type of fuel
+enum FuelType {
+  FUEL_TYPE_UNSPECIFIED = 0;
+  FUEL_TYPE_RESERVED_UNKNOWN = 1;
+  FUEL_TYPE_E10 = 2;
+  FUEL_TYPE_E15 = 3;
+  FUEL_TYPE_E25 = 4;
+  FUEL_TYPE_E85 = 5;
+  FUEL_TYPE_E100 = 6;
+  FUEL_TYPE_DIESEL = 7;
+  FUEL_TYPE_M85 = 8;
+  FUEL_TYPE_LPG = 9;
+  FUEL_TYPE_CNG = 10;
+  FUEL_TYPE_HYDROGEN = 11;
+  FUEL_TYPE_ELECTRICITY = 12;
+  FUEL_TYPE_UNLEADED = 13;
+  FUEL_TYPE_ELECTRIC = 14;
+}
+
+// Indicates the minimum fuel grade accepted by the engine.
+enum FuelGrade {
+  FUEL_GRADE_UNSPECIFIED = 0;
+  FUEL_GRADE_REGULAR = 1;
+  FUEL_GRADE_MIDGRADE = 2;
+  FUEL_GRADE_PREMIUM = 3;
+}
+
+// Indicates the type of Electric Vehicle
+enum EvType {
+  EV_TYPE_UNSPECIFIED = 0;
+  EV_TYPE_NONEV = 1; // nonev: not an ev
+  EV_TYPE_HEV = 2;  // hev: non-pluggable hybrid ev
+  EV_TYPE_PHEV = 3; // phev: pluggable hybrid
+  EV_TYPE_REV = 4; // rev: range-extended battery ev
+  EV_TYPE_BEV = 5; // bev: battery ev
+  EV_TYPE_FCEV = 6; // fcev: hydrogen fuel-cell ev (with or without battery). If not present, assume NONEV"
+}
+
+// Indicates an EV inlet type
+enum EvInletType {
+  EV_INLET_TYPE_UNSPECIFIED = 0;
+  EV_INLET_TYPE_AVCON = 1; // Avcon: old J1772-2001 connector
+  EV_INLET_TYPE_MARECHAL = 2; // Marechal: old J1772-2001 connector with 3-phases AC
+  EV_INLET_TYPE_IEC_TYPE_1 = 3;  // IEC types: IEC-62196-2 connectors
+  EV_INLET_TYPE_IEC_TYPE_2 = 4;  // IEC types: IEC-62196-2 connectors
+  EV_INLET_TYPE_IEC_TYPE_3A = 5; // IEC types: IEC-62196-2 connectors
+  EV_INLET_TYPE_IEC_TYPE_3C = 6; // IEC types: IEC-62196-2 connectors
+  EV_INLET_TYPE_GB_T_20234_2 = 7;  // GB_T_20234_2: Chinese AC connector
+  EV_INLET_TYPE_GB_T_20234_3 = 8; // GB_T_20234_3: Chinese DC connector
+  EV_INLET_TYPE_CCS_COMBO1 = 9;  // CCS connectors: IEC connectors plus fast DC contacts
+  EV_INLET_TYPE_CCS_COMBO2 = 10;  // CCS connectors: IEC connectors plus fast DC contacts
+  EV_INLET_TYPE_SAE_J1772 = 11;  // SAE connectors: As IEC type 1 in North America
+  EV_INLET_TYPE_SAE_J1772_DC = 12; // SAE connectors: As IEC type 1 in North America
+  EV_INLET_TYPE_TESLA = 13;  // Tesla: Accepts proprietary AC connector
+  EV_INLET_TYPE_TESLA_TYPE_2 = 14; // Tesla type 2: Accepts IEC type 2 plus proprietary AC/DC connector
+  EV_INLET_TYPE_TESLA_COMBO2 = 15; // Tesla Combo 2: Accepts CCS_Combo2 + proprietary AC/DC connector
+  EV_INLET_TYPE_TESLA_DC = 16;  // Tesla_DC: accepts proprietary DC connector (SuperCharger)
+  EV_INLET_TYPE_CHADEMO = 17;  // CHAdeMO: Japanese DC connector
+  EV_INLET_TYPE_CHAOJI = 18; // ChaoJI: CHAdeMO 3 converged Japanese/Chinese plug
+  EV_INLET_TYPE_ENERGYBUS = 19; // EnergyBus: standard for light vehicles.
+}
+
+// Indicates which row the utterance came from
+enum UtteranceRow {
+  UTTERANCE_ROW_UNSPECIFIED = 0;
+  UTTERANCE_ROW_1 = 1;
+  UTTERANCE_ROW_2 = 2;
+  UTTERANCE_ROW_3 = 3;
+  UTTERANCE_ROW_4 = 4;
+}
+
+// Indicates which seat the utterance came from
+enum UtteranceSeat {
+  UTTERANCE_SEAT_UNSPECIFIED = 0;
+  UTTERANCE_SEAT_LEFT = 1;
+  UTTERANCE_SEAT_CENTER = 2;
+  UTTERANCE_SEAT_RIGHT = 3;
+}

@@ -1,0 +1,1161 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.ude.v1;
+
+import "cerence/cloudservices/domain/common/content/common/v1/common_detail.proto";
+import "cerence/cloudservices/domain/common/content/ude/v1/meta_info.proto";
+import "cerence/cloudservices/domain/common/content/ude/v1/provenance.proto";
+
+import "google/protobuf/wrappers.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/ude/v1";
+option java_multiple_files = true;
+option java_outer_classname = "AiDetailProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.ude.v1";
+
+// Response from the Reasoning and Knowledge Service
+message AiDetail {
+  // AI detail version
+  string version = 1 [deprecated = true];
+
+  // The name of the restaurant, business, parking or gas station (e.g., "McDonald's (Downtown)").
+  AiDetailCommonStringType name = 2 [deprecated = true];
+
+  // The "canonical" name of restaurant, business, parking or gas station (e.g., "McDonald's").
+  AiDetailCommonStringType brand_name = 3 [deprecated = true];
+
+  // The "canonical" name of restaurant, business, parking or gas station (e.g., "McDonald's").
+  // This field holds the constraints which are applied for similar brands categories. The values
+  // are identical to brand_name
+  AiDetailCommonStringType similar_brand_name = 4 [deprecated = true];
+
+  // Amenities available at the restaurant, business, parking or gas station.
+  AmenityType amenities = 5 [deprecated = true];
+  // Amenity attributes
+  message AmenityType {
+    option deprecated = true;
+    // An array of amenity values
+    repeated CerenceAmenity values = 1;
+    // Confidence and constraints
+    MetaInfo meta_info = 2;
+    // An array of amenity values, string representation:
+    repeated string internal_values = 3;
+
+    // Amenity
+    enum CerenceAmenity {
+      option deprecated = true;
+      // No value has been specified.
+      CERENCE_AMENITY_UNSPECIFIED = 0;
+      // Used for return value only. Represents value unknown in this version.
+      CERENCE_AMENITY_RESERVED_UNKNOWN = 1;
+
+      CERENCE_AMENITY_BIKE_STORAGE_RACK = 2;
+      CERENCE_AMENITY_CAR_WASH = 3;
+      CERENCE_AMENITY_ELEVATOR = 4;
+      CERENCE_AMENITY_CHARGING_STATION = 5;
+      CERENCE_AMENITY_GATE = 6;
+      CERENCE_AMENITY_LIGHTING_DEVICE = 7;
+      CERENCE_AMENITY_TOILET = 8;
+      CERENCE_AMENITY_WIFI = 9;
+      CERENCE_AMENITY_AIR_PUMP = 10;
+      CERENCE_AMENITY_CAR_CAMPING_AREA = 11;
+      CERENCE_AMENITY_GROCERY_STORE = 12;
+      CERENCE_AMENITY_FOOD = 13;
+      CERENCE_AMENITY_FOOD_FOR_HERE = 14;
+      CERENCE_AMENITY_SHOWER = 15;
+      CERENCE_AMENITY_BABY_CHANGE_ROOM = 16;
+      CERENCE_AMENITY_REPAIR_SHOP = 17;
+      CERENCE_AMENITY_SELL_ALCOHOL = 18;
+      CERENCE_AMENITY_ATM = 19;
+      CERENCE_AMENITY_CONVENIENCE_STORE = 20;
+      CERENCE_AMENITY_DISCOUNT = 21;
+      CERENCE_AMENITY_PARKING = 22;
+    }
+  }
+
+  // The open status of the restaurant, business, parking or gas station based on either the current
+  // time (if the search locus is the current location) or the ETA (if the
+  // search locus is the destination or location reference).
+  Status status = 6;
+
+  // The open status attributes
+  message Status {
+    // An array of open status
+    repeated StatusType values = 1;
+
+    // An array of open status, string representation
+    repeated string internal_values = 3;
+
+    // Confidence and constraints
+    MetaInfo meta_info = 2 [deprecated = true];
+
+    // The open status of the restaurant, business, parking or gas station
+    enum StatusType {
+      // No value has been specified.
+      STATUS_TYPE_UNSPECIFIED = 0;
+      // Used for return value only. Represents value unknown in this version.
+      STATUS_TYPE_RESERVED_UNKNOWN = 1;
+      STATUS_TYPE_OPEN = 2;
+      STATUS_TYPE_CLOSED = 3;
+      STATUS_TYPE_UNAVAILABLE = 4;
+    }
+  }
+
+  // The price/cost of the restaurant, business, parking or gas station.
+  CostType cost = 7 [deprecated = true];
+  // Cost attributes
+  message CostType {
+    option deprecated = true;
+    // The 3PP price/cost in provider cost canonicalized.
+    CostQualitativeType cost = 1;
+
+    // The normalized price/cost of the restaurant or business
+    AiDetailCommonDoubleType normalized_cost = 2;
+
+    // The relative price/cost of the restaurant or business
+    AiDetailCommonDoubleType relative_cost = 3;
+
+    // An index to separate parking/gas station by currency
+    AiDetailCommonIntegerType internal_currency_bucket_idx = 4;
+  }
+
+  // The distance from the restaurant, business, parking or gas station to the search locus.
+  DistanceType distance = 8 [deprecated = true];
+
+  // The payment types accepted at the parking option.
+  PaymentType payment_type = 9 [deprecated = true];
+
+  // Payment attributes
+  message PaymentType {
+    option deprecated = true;
+    // An array of payment types
+    repeated CerencePaymentType values = 1;
+
+    // Confidence and constraints
+    MetaInfo meta_info = 2;
+
+    // An array of payment types
+    repeated string internal_values = 3;
+
+    // Payment type
+    enum CerencePaymentType {
+      option deprecated = true;
+      // No value has been specified.
+      CERENCE_PAYMENT_TYPE_UNSPECIFIED = 0;
+
+      // Used for return value only. Represents value unknown in this version.
+      CERENCE_PAYMENT_TYPE_RESERVED_UNKNOWN = 1;
+
+      CERENCE_PAYMENT_TYPE_AMERICAN_EXPRESS = 2;
+      CERENCE_PAYMENT_TYPE_BARCLAY = 3;
+      CERENCE_PAYMENT_TYPE_BILL = 4;
+      CERENCE_PAYMENT_TYPE_CASH = 5;
+      CERENCE_PAYMENT_TYPE_COIN = 6;
+      CERENCE_PAYMENT_TYPE_CREDIT_CARD = 7;
+      CERENCE_PAYMENT_TYPE_DEBIT_CARD = 8;
+      CERENCE_PAYMENT_TYPE_DISCOVER = 9;
+      CERENCE_PAYMENT_TYPE_MASTER = 10;
+      CERENCE_PAYMENT_TYPE_VISA = 11;
+      CERENCE_PAYMENT_TYPE_EC_CARD = 12;
+      CERENCE_PAYMENT_TYPE_CHARGENOW = 13;
+    }
+  }
+
+  // Opening hours
+  OpeningHoursType opening_hours = 10;
+  message OpeningHoursType {
+    // Opening time in the HH:MM format
+    AiDetailCommonStringType opening_time = 1;
+
+    // Closing time in the HH:MM format
+    AiDetailCommonStringType closing_time = 2;
+
+    // Next opening day if a POI is currently closed.
+    DayOfWeekType opening_day = 3;
+    message DayOfWeekType {
+      repeated cerence.cloudservices.domain.common.content.common.v1.DayOfWeek values = 1;
+    }
+    // Indicate specific conditions re. open status.
+    OpeningFlagType flags = 4;
+    message OpeningFlagType {
+      repeated CerenceOpeningFlagType values = 1;
+    }
+    enum CerenceOpeningFlagType {
+      //No Value has been specified
+      CERENCE_OPENING_FLAG_TYPE_UNSPECIFIED = 0;
+      // Used for return value only. Represents value unknown in this version.
+      CERENCE_OPENING_FLAG_TYPE_UNKNOWN = 1;
+
+      // This POI is closed all day.
+      CERENCE_OPENING_FLAG_TYPE_CLOSED_TODAY = 2;
+      // This POI is supposed to be open but is currently closed.
+      CERENCE_OPENING_FLAG_TYPE_CLOSED_UNEXPECTED = 3;
+    }
+
+  }
+
+  //Place meta info
+  PlaceMetaInfo meta_info = 11;
+
+  // Point of interest
+  PoiType poi = 30 [deprecated = true];
+
+  // Point of interest attributes
+  message PoiType {
+    option deprecated = true;
+    // The ID of the location/POI given by the underlying 3PP (e.g.,
+    // "city-hall-san-francisco").
+    string poi_id = 1;
+
+    // The full name of the location/POI (e.g., ""San Francisco City Hall, San
+    // Franciso, USA"").
+    AiDetailCommonStringType name = 2;
+
+    // The alias name of the location/POI if available (e.g., "San Francisco
+    // City Hall").
+    AiDetailCommonStringType poi_alias = 3;
+
+    // Currently NOT populated.
+    AiDetailCommonStringType poi_category = 4;
+
+    // Coordinates
+    CoordinatesType poi_coordinates = 5;
+
+    // Address
+    AddressType address = 6;
+
+    // Distance
+    DistanceType distance = 7;
+  }
+
+  // Domains
+  oneof domain {
+    // Restaurant & business domain
+    Localsearch local_search = 50 [deprecated = true];
+
+    // Fuel domain
+    Fuel fuel = 70 [deprecated = true];
+
+    // Parking domain
+    Parking parking = 90 [deprecated = true];
+
+    // EV charging
+    EVCharging ev_charging = 110 [deprecated = true];
+  }
+
+  // Local search attributes for business and restaurant domain.
+  message Localsearch {
+    option deprecated = true;
+    // The ID of the restaurant or business given by the underlying 3PP.
+    AiDetailCommonStringType pob = 1;
+
+    // The types/categories of the restaurant or business. This field can
+    // contain multiple category values. Return values are restaurant and
+    // business types from the AI ontology.
+    LocalsearchCategoryType category = 2;
+
+    // The types/categories of the restaurant or business. This field holds
+    // the constraints which are applied for similar categories. The values
+    // are identical to category
+    LocalsearchCategoryType similar_category = 7;
+
+    // Local search category attributes
+    message LocalsearchCategoryType {
+      option deprecated = true;
+      // An array of local search categories
+      repeated CerenceLocalsearchCategory values = 1;
+      // An array of local search categories
+      // Confidence and constraints
+      MetaInfo meta_info = 2;
+      // An array of local search categories as string
+      repeated string internal_values = 3;
+
+      // Local search category
+      enum CerenceLocalsearchCategory {
+        option deprecated = true;
+        // No value has been specified.
+        CERENCE_LOCALSEARCH_CATEGORY_UNSPECIFIED = 0;
+
+        // Used for return value only. Represents value unknown in this
+        // version.
+        CERENCE_LOCALSEARCH_CATEGORY_RESERVED_UNKNOWN = 1;
+
+        CERENCE_LOCALSEARCH_CATEGORY_AFGHANI_RESTAURANT = 2; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_AFRICAN_RESTAURANT = 3; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_AMERICAN_RESTAURANT = 4; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_ANHUI_RESTAURANT = 5; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_ARABIAN_RESTAURANT = 6; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_ARGENTINE_RESTAURANT = 7; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_ASIAN_RESTAURANT = 8; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_ASIANFUSION_RESTAURANT = 9; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_AUSTRALIAN_RESTAURANT = 10; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_AUSTRIAN_RESTAURANT = 11; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BAKERY = 12; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BANGLADESHI_RESTAURANT = 13; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BASQUE_RESTAURANT = 14; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BBQ_RESTAURANT = 15; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BEER_RESTAURANT = 16; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BEIJING_RESTAURANT = 17; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BELGIAN_RESTAURANT = 18; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BENTO_SHOP = 19; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BOAT_RESTAURANT = 21; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BOWL_RESTAURANT = 22; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BRASSERIE_RESTAURANT = 23; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BRAZILIAN_RESTAURANT = 24; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BREAKFAST_BRUNCH_RESTAURANT = 25; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BRITISH_RESTAURANT = 26; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BUFFET_RESTAURANT = 27; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BURGER_RESTAURANT = 28; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_BURMESE_RESTAURANT = 29; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CAFE = 30; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CAJUN_RESTAURANT = 32; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CAMBODIAN_RESTAURANT = 33; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CANADIAN_RESTAURANT = 34; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CARIBBEAN_RESTAURANT = 35; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CHAOZHOU_RESTAURANT = 37; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CHEESESTEAK_RESTAURANT = 38; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CHICKEN_RESTAURANT = 39; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CHICKEN_WINGS_RESTAURANT = 40; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CHINESE_RESTAURANT = 41; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CHINESE_VEGETARIAN_RESTAURANT = 42; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_COLOMBIAN_RESTAURANT = 44; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CONGEE_RESTAURANT = 45; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CRAB_RESTAURANT = 46; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CREPERIE_RESTAURANT = 48; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CUBAN_RESTAURANT = 49; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CURRY_RESTAURANT = 50; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_CZECH_RESTAURANT = 51; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_DELI_RESTAURANT = 52; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_DELIVERY_RESTAURANT = 183; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_DESSERT_RESTAURANT = 53; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_DIMSUM_RESTAURANT = 54; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_DINER_RESTAURANT = 55; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_DINNER_RESTAURANT = 56; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_DONGBEI_RESTAURANT = 57; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_DUMPLING_RESTAURANT = 58; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_EEL_RESTAURANT = 59; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_EGYPTIAN_RESTAURANT = 60; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_ETHIOPIAN_RESTAURANT = 61; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FALAFEL_RESTAURANT = 63; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FAMILY_RESTAURANT = 64; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FAST_FOOD_RESTAURANT = 65; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FILIPINO_RESTAURANT = 66; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FISHNCHIPS_RESTAURANT = 67; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FONDUE_RESTAURANT = 68; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FOOD_COURT_RESTAURANT = 69; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FOODSTAND_RESTAURANT = 70; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FOREIGN_RESTAURANT = 71; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FRENCH_RESTAURANT = 72; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FUGU_RESTAURANT = 184; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_FUJIAN_RESTAURANT = 73; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_GASTROPUB_RESTAURANT = 74; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_GEORGIAN_RESTAURANT = 75; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_GERMAN_RESTAURANT = 76; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_GREEK_RESTAURANT = 77; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_GUANGDONG_RESTAURANT = 79; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_HAITIAN_RESTAURANT = 80; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_HALAL_RESTAURANT = 81; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_HAWAIIAN_RESTAURANT = 82; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_HIMALAYAN_RESTAURANT = 83; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_HONGKONG_RESTAURANT = 84; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_HOTDOG_RESTAURANT = 85; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_HOTPOT_RESTAURANT = 86; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_HUBEI_RESTAURANT = 87; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_HUNAN_RESTAURANT = 88; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_HUNGARIAN_RESTAURANT = 89; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_IBERIAN_RESTAURANT = 90; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_ICE_CREAM_RESTAURANT = 91; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_INDIAN_RESTAURANT = 92; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_INDONESIAN_RESTAURANT = 93; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_INTEGRATED_RESTAURANT = 94; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_IRISH_RESTAURANT = 95; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_ITALIAN_RESTAURANT = 96; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_IZAKAYA_RESTAURANT = 97; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_JAPANESE_RESTAURANT = 99; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_JAPANESE_BBQ_RESTAURANT = 98; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_JAPANESE_STEAK_RESTAURANT = 100; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_JIANGSU_RESTAURANT = 101; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_KAISEKI_RESTAURANT = 102; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_KEBAB_RESTAURANT = 103; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_KOREAN_RESTAURANT = 104; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_KUSHIAGE_RESTAURANT = 105; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_LAOTIAN_RESTAURANT = 106; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_LATIN_RESTAURANT = 107; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_LEBANESE_RESTAURANT = 108; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_LOCAL_FOOD_RESTAURANT = 109; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_LUNCH_RESTAURANT = 110; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_MALAYSIAN_RESTAURANT = 111; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_MEDICINAL_RESTAURANT = 112; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_MEDITERRANEAN_RESTAURANT = 113; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_MEXICAN_RESTAURANT = 114; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_MOLECULAR_GASTRONOMY_RESTAURANT = 116; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_MONGOLIAN_RESTAURANT = 117; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_MONJAYAKI_RESTAURANT = 118; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_MOROCCAN_RESTAURANT = 119; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_NOODLE_RESTAURANT = 120; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_ODEN_RESTAURANT = 121; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_OKINAWA_RESTAURANT = 122; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_OKONOMIYAKI_RESTAURANT = 123; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_ORGANIC_RESTAURANT = 124; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_OXTONGUE_RESTAURANT = 125; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_OYSTERBAR_RESTAURANT = 126; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_PAKISTANI_RESTAURANT = 127; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_PERSIAN_RESTAURANT = 128; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_PERUVIAN_RESTAURANT = 129; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_PIZZA_RESTAURANT = 130; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_POLISH_RESTAURANT = 131; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_PORRIDGE_RESTAURANT = 132; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_PORTUGUESE_RESTAURANT = 133; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_POUTINERIE_RESTAURANT = 134; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_RAMEN_RESTAURANT = 135; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_RICE_RESTAURANT = 136; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_RUSSIAN_RESTAURANT = 137; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SALAD_BAR_RESTAURANT = 138; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SALVADORAN_RESTAURANT = 139; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SANDWICH_RESTAURANT = 140; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SCANDINAVIAN_RESTAURANT = 141; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SCOTTISH_RESTAURANT = 142; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SEAFOOD_RESTAURANT = 143; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SENEGALESE_RESTAURANT = 144; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SHABUSHABU_RESTAURANT = 145; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SHANDONG_RESTAURANT = 146; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SHANGHAI_RESTAURANT = 147; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SICHUAN_RESTAURANT = 148; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SINGAPOREAN_RESTAURANT = 149; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SLOVAKIAN_RESTAURANT = 150; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SNACK_BAR_RESTAURANT = 151; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SOBA_RESTAURANT = 152; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SOUP_RESTAURANT = 153; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SOUTHAFRICAN_RESTAURANT = 154; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SPANISH_RESTAURANT = 155; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_STEAK_RESTAURANT = 156; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SUKIYAKI_RESTAURANT = 157; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_SUSHI_RESTAURANT = 158; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_TAIWANESE_RESTAURANT = 160; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_TAKEAWAY_RESTAURANT = 185; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_TAKOYAKI_RESTAURANT = 161; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_TAPAS_RESTAURANT = 162; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_TEA_RESTAURANT = 164; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_TEA_HOUSE = 163; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_TEMPURA_RESTAURANT = 165; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_TEX_MEX_RESTAURANT = 166; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_THAI_RESTAURANT = 167; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_TONKATSU_RESTAURANT = 168; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_TRADITIONAL_RESTAURANT = 170; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_TURKISH_RESTAURANT = 171; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_UDON_RESTAURANT = 172; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_UKRAINIAN_RESTAURANT = 173; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_UZBEK_RESTAURANT = 174; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_VEGETARIAN_RESTAURANT = 175; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_VENEZUELAN_RESTAURANT = 176; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_VIETNAMESE_RESTAURANT = 177; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_WESTERN_RESTAURANT = 178; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_XIBEI_RESTAURANT = 179; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_YAKITORI_RESTAURANT = 180; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_YUNGUI_RESTAURANT = 181; // Restaurant
+        CERENCE_LOCALSEARCH_CATEGORY_ZHEJIANG_RESTAURANT = 182; // Restaurant
+
+        CERENCE_LOCALSEARCH_CATEGORY_ACCOUNTING = 400; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_AIRLINE = 403; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_AIRPORT = 405; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_AIRPORT_TERMINAL = 404; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_AMUSEMENT_PARK = 406; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_ANTIQUE_STORE = 619; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_AQUARIUM = 408; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_ART_GALLERY = 409; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_ATM = 411; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BANK = 413; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BAR = 414; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BASEBALL_FIELD = 415; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BEACH = 620; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BEAUTY_SALON = 416; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BEAUTY_SPA = 621; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BICYCLE_STORE = 418; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BOOK_STORE = 420; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BOTANICAL_GARDEN = 421; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BOWLING_ALLEY = 422; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BUILDING = 423; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BUS_STATION = 424; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BUSINESS_HOTEL = 622; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_BUTCHER_SHOP = 623; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CAMPGROUND = 427; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CAR_DEALER = 428; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CAR_RENTAL = 430; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CAR_REPAIR = 431; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CAR_WASH = 432; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CASINO = 433; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CATERING = 36; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CELLPHONE_STORE = 435; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CEMETERY = 436; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CHARGING_STATION = 437; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CHURCH = 438; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CITY_HALL = 439; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CLOTHING_STORE = 440; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CLUB = 441; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CONVENIENCE_STORE = 443; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_CONVENTION_CENTER = 444; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_COURTHOUSE = 446; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_DAY_CARE = 448; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_DENTIST = 449; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_DEPARTMENT_STORE = 450; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_DOCTOR = 451; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_DRIVE_YOU_HOME_SERVICE = 453; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_DRIVING_LICENSE_CENTER = 454; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_DRIVING_SCHOOL = 455; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_ELECTRICIAN = 459; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_ELECTRONICS_STORE = 460; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_EMBASSY = 461; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_EMERGENCY_CARE = 462; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_ENTERTAINMENT_HALL = 464; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_EVENT_PLANNER = 625; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_FERRY = 467; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_FESTIVAL = 468; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_FINANCIAL_INSTITUTION = 626; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_FIRE_STATION = 471; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_FISHING_PLACE = 627; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_FISHING_STORE = 628; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_FLORIST = 475; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_FUNERAL_HOME = 478; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_FURNITURE_STORE = 479; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_GAME_CENTER = 480; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_GAME_STORE = 629; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_GAS_STATION = 630; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_GENERAL_CONTRACTOR = 483; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_GOLF_COURSE = 485; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_GOLF_RANGE = 486; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_GOLF_STORE = 631; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_GROCERY_OR_SUPERMARKET = 489; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_GYM = 490; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_HAIR_SALON = 632; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_HARDWARE_STORE = 492; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_HINDU_TEMPLE = 495; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_HOME_GOODS_STORE = 496; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_HOSPITAL = 498; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_HOT_SPRING = 633; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_HOTEL = 500; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_HUNDREDYEN_STORE = 634; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_ICE_SKATING_RINK = 503; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_INSURANCE_AGENCY = 504; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_JAPANESE_SWEETS_CAFE = 505; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_JAPANESE_SWEETS_STORE = 635; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_JEWELRY_STORE = 507; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_KARAOKE = 508; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_LANDSCAPE_VIEW_SPOT = 509; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_LAUNDRY = 510; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_LAWYER = 511; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_LIBRARY = 513; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_LIFT_ROPEWAY = 514; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_LIQUOR_STORE = 515; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_LOCKSMITH = 520; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_MANGA_CAFE = 522; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_MARINA = 523; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_MARTIAL_ARTS_HALL = 636; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_MOSQUE = 530; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_MOTORAIL = 531; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_MOTORCYCLE_REPAIR = 532; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_MOVIE_RENTAL = 534; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_MOVIE_THEATER = 535; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_MOVING_COMPANY = 536; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_MUSEUM = 537; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_NIGHT_CLUB = 538; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_NIGHT_VIEW_SPOT = 539; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_OBSERVATORY = 542; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_OPTOMETRY = 543; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_OUTDOOR_STORE = 637; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PAINTER = 546; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PARK = 547; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PET_STORE = 550; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PHARMACY = 552; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PHOTO_STUDIO = 638; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PHYSIOTHERAPIST = 554; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PLACE = 639; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PLACE_OF_WORSHIP = 555; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PLANETARIUM = 556; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PLUMBER = 557; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_POLICE = 558; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PORT = 559; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_POST_OFFICE = 560; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_PUBLIC_TRANSPORTATION = 563; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_REAL_ESTATE_AGENCY = 564; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_RELIGIOUS_ORGANIZATIONS = 566; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_RENTAL_STORE = 640; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_REST_AREA = 568; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_RESTAURANT = 570; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_RESTROOM = 571; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_ROOFING_CONTRACTOR = 572; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_RV_PARK = 573; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_RYOKAN_HOTEL = 641; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SCHOOL = 575; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SECONDHAND_BOOK_STORE = 576; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SECONDHAND_STORE = 642; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SHOE_STORE = 579; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SHOPPING_MALL = 580; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SOCCER_FIELD = 584; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SPA = 585; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SPORTS_FIELD = 588; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SPORTS_STORE = 643; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_STADIUM = 590; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_STORAGE = 591; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_STORE = 592; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SUBWAY_STATION = 593; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SWEETS_STORE = 644; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SWIMMING_POOL = 595; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_SYNAGOGUE = 596; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_TAXI = 645; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_TAXI_STAND = 597; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_TEMPLE_SHRINE = 599; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_TENNIS_COURT = 646; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_TOURIST_ATTRACTION = 603; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_TOY_STORE = 605; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_TRAFFIC_CAMERA = 606; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_TRAIN_STATION = 607; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_TRAVEL_AGENCY = 608; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_UNIVERSITY = 609; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_USED_CAR_DEALER = 610; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_VETERINARY_CARE = 611; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_WEDDING_HALL = 647; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_WINTERSPORT_RESORT = 615; // Business
+        CERENCE_LOCALSEARCH_CATEGORY_ZOO = 616; // Business
+      }
+
+    }
+
+    // The rating of the restaurant or business, as given by the underlying
+    // 3PP (e.g., "4.0").This field will be empty if the provider rating is
+    // NOT available.
+    AiDetailCommonStringType provider_rating = 4;
+
+    // The 3PP rating in provider rating canonicalized.
+    RatingType rating = 5;
+
+    // Rating attributes
+    message RatingType {
+      option deprecated = true;
+      // An array of ratings
+      repeated CerenceRating values = 1;
+      // Confidence and constraints
+      MetaInfo meta_info = 2;
+      // An array of ratings
+      repeated string internal_values = 3;
+
+      enum CerenceRating {
+        option deprecated = true;
+        // No value has been specified.
+        CERENCE_RATING_UNSPECIFIED = 0;
+        // Used for return value only. Represents value unknown in this
+        // version.
+        CERENCE_RATING_RESERVED_UNKNOWN = 1;
+        CERENCE_RATING_POOR = 2;
+        CERENCE_RATING_AVERAGE = 3;
+        CERENCE_RATING_GOOD = 4;
+        CERENCE_RATING_EXCEPTIONAL = 5;
+      }
+    }
+
+    // The popularity (i.e. number of reviews) of the restaurant or business,
+    // as given by the underlying 3PP.
+    AiDetailCommonIntegerType provider_popularity = 6;
+  }
+
+  // Fuel domain attributes
+  message Fuel {
+    option deprecated = true;
+    // The ID of the gas station given by the underlying 3PP (e.g.,
+    // "299ee4bb-e83e-11e4-b930-00259079a43a").
+    AiDetailCommonStringType gas_station = 1;
+
+    // A vector of fuel types available at the gas station. This field is
+    // index aligned with fuel price.
+    FuelType fuel_type = 2;
+
+    // Fuel attributes
+    message FuelType {
+      option deprecated = true;
+      // List of fuel type
+      repeated CerenceFuel values = 1;
+
+      // Confidence and constraints
+      MetaInfo meta_info = 2;
+
+      // List of fuel type
+      repeated string internal_values = 3;
+
+      // Fuel types
+      enum CerenceFuel {
+        option deprecated = true;
+        // No value has been specified.
+        CERENCE_FUEL_UNSPECIFIED = 0;
+
+        // Used for return value only. Represents value unknown in this
+        // version.
+        CERENCE_FUEL_RESERVED_UNKNOWN = 1;
+        CERENCE_FUEL_CNG = 2;
+        CERENCE_FUEL_DIESEL = 3;
+        CERENCE_FUEL_E10 = 4;
+        CERENCE_FUEL_E85 = 5;
+        CERENCE_FUEL_LPG = 6;
+        CERENCE_FUEL_MIDGRADE = 7;
+        CERENCE_FUEL_PREMIUM = 8;
+        CERENCE_FUEL_PREMIUM_DIESEL = 9;
+        CERENCE_FUEL_SUPER = 10;
+        CERENCE_FUEL_SUPER_PLUS = 11;
+        CERENCE_FUEL_UNLEADED = 12;
+        CERENCE_FUEL_ADBLUE = 13;
+        CERENCE_FUEL_FUEL = 14;
+        CERENCE_FUEL_HYDROGEN = 15;
+        CERENCE_FUEL_BIODIESEL = 16;
+        CERENCE_FUEL_ELECTRIC = 17;
+        CERENCE_FUEL_ETHANOL = 18;
+        CERENCE_FUEL_GASOLINE = 19;
+        CERENCE_FUEL_TRUCKDIESEL = 20;
+        CERENCE_FUEL_DIESEL_MIDGRADE = 21;
+        CERENCE_FUEL_E10_MIDGRADE = 22;
+        CERENCE_FUEL_ETHANOL_SUPER = 23;
+        CERENCE_FUEL_GASOLINE_PREMIUM = 24;
+        CERENCE_FUEL_SP95_E10 = 25;
+        CERENCE_FUEL_LNG = 26;
+      }
+
+    }
+
+    // Price
+    PriceType price = 3;
+
+    // Price attributes
+    message PriceType {
+      option deprecated = true;
+      // A vector of prices for the fuel types available at the gas station.
+      // This field is index aligned with: fuelType, currency, unit, and
+      // quoteAge (e.g., ["3.799","3.999","3.899","3.999"]).
+      AiDetailCommonDoubleType price = 1;
+
+      // A vector of the currency of the fuel prices. This field is index
+      // aligned with price.
+      CurrencyType currency = 2;
+
+      // Currency attributes
+      message CurrencyType {
+        option deprecated = true;
+        // An array of currencies
+        repeated CerenceCurrency values = 1;
+        // Confidence and constraints
+        MetaInfo meta_info = 2;
+
+        // An array of currencies
+        repeated string internal_values = 3;
+
+        // Currency
+        enum CerenceCurrency {
+          option deprecated = true;
+          // No value has been specified.
+          CERENCE_CURRENCY_UNSPECIFIED = 0;
+
+          // Used for return value only. Represents value unknown in this
+          // version.
+          CERENCE_CURRENCY_RESERVED_UNKNOWN = 1;
+          CERENCE_CURRENCY_USD = 2;
+          CERENCE_CURRENCY_EUR = 3;
+          CERENCE_CURRENCY_CAD = 4;
+          CERENCE_CURRENCY_MXN = 5;
+          CERENCE_CURRENCY_BRL = 6;
+          CERENCE_CURRENCY_AUD = 7;
+          CERENCE_CURRENCY_CNY = 8;
+          CERENCE_CURRENCY_CZK = 9;
+          CERENCE_CURRENCY_DKK = 10;
+          CERENCE_CURRENCY_GBP = 11;
+          CERENCE_CURRENCY_HUF = 12;
+          CERENCE_CURRENCY_JPY = 13;
+          CERENCE_CURRENCY_KRW = 14;
+          CERENCE_CURRENCY_NOK = 15;
+          CERENCE_CURRENCY_PLN = 16;
+          CERENCE_CURRENCY_RUB = 17;
+          CERENCE_CURRENCY_SEK = 18;
+          CERENCE_CURRENCY_TRY = 19;
+        }
+
+      }
+
+      // Unit for fuel price
+      UnitType unit = 3;
+
+      // Unit attributes
+      message UnitType {
+        option deprecated = true;
+        // An array of units
+        repeated CerenceUnit values = 1;
+
+
+        // Confidence and constraints
+        MetaInfo meta_info = 2;
+        // An array of units
+        repeated string internal_values = 3;
+
+        // Fuel unit of measurement
+        enum CerenceUnit {
+          option deprecated = true;
+          // No value has been specified.
+          CERENCE_UNIT_UNSPECIFIED = 0;
+
+          // Used for return value only. Represents value unknown in this
+          // version.
+          CERENCE_UNIT_RESERVED_UNKNOWN = 1;
+          CERENCE_UNIT_GALLON = 2;
+          CERENCE_UNIT_LITER = 3;
+        }
+      }
+
+      // A vector of the number of days since the price was last updated. This
+      // field is index aligned with fuel price (e.g., 0,0,1,12).
+      AiDetailCommonIntegerType quote_age = 4;
+    }
+  }
+
+  // Parking domain attributes
+  message Parking {
+    option deprecated = true;
+    // The ID of the parking option (e.g.,
+    // "299ee4bb-e83e-11e4-b930-00259079a43a").
+    AiDetailCommonStringType parking_id = 1;
+
+    // A vector of the parking types that the parking option belongs to.
+    ParkingType parking_type = 2;
+
+    // Parking attributes
+    message ParkingType {
+      option deprecated = true;
+      // An array of parking categories
+      repeated CerenceParkingCategory values = 1;
+
+      // Confidence and constraints
+      MetaInfo meta_info = 2;
+
+      // An array of parking categories
+      repeated string internal_values = 3;
+
+      // Parking category
+      enum CerenceParkingCategory {
+        option deprecated = true;
+        // No value has been specified.
+        CERENCE_PARKING_CATEGORY_UNSPECIFIED = 0;
+
+        // Used for return value only. Represents value unknown in this
+        // version.
+        CERENCE_PARKING_CATEGORY_RESERVED_UNKNOWN = 1;
+
+        CERENCE_PARKING_CATEGORY_COVERED = 2;
+        CERENCE_PARKING_CATEGORY_GARAGE = 3;
+        CERENCE_PARKING_CATEGORY_STREET = 4;
+        CERENCE_PARKING_CATEGORY_UNDERGROUND = 5;
+        CERENCE_PARKING_CATEGORY_HANDICAPPED = 6;
+        CERENCE_PARKING_CATEGORY_WOMEN_ONLY = 7;
+        CERENCE_PARKING_CATEGORY_CARPOOLING = 8;
+        CERENCE_PARKING_CATEGORY_AIRPORT = 9;
+        CERENCE_PARKING_CATEGORY_PUBLIC_TRANSPORTATION = 10;
+        CERENCE_PARKING_CATEGORY_VALET = 11;
+        CERENCE_PARKING_CATEGORY_ABOVE_GROUND = 12;
+        CERENCE_PARKING_CATEGORY_GROUND_LEVEL = 13;
+        CERENCE_PARKING_CATEGORY_FAMILY_ONLY = 14;
+        CERENCE_PARKING_CATEGORY_CUSTOMER_ONLY = 15;
+        CERENCE_PARKING_CATEGORY_EMPLOYEE_ONLY = 16;
+        CERENCE_PARKING_CATEGORY_PERMIT_HOLDER_ONLY = 17;
+        CERENCE_PARKING_CATEGORY_RESIDENT_ONLY = 18;
+        CERENCE_PARKING_CATEGORY_VISITOR_ONLY = 19;
+        CERENCE_PARKING_CATEGORY_LONG_TERM = 20;
+        CERENCE_PARKING_CATEGORY_OVERNIGHT = 22;
+        CERENCE_PARKING_CATEGORY_MOTORCYCLE = 23;
+        CERENCE_PARKING_CATEGORY_RV = 24;
+        CERENCE_PARKING_CATEGORY_LARGE_SPACE = 25;
+        CERENCE_PARKING_CATEGORY_MANNED = 26;
+      }
+    }
+
+    // The entrance height of the parking option returned in feet (e.g., 8.0).
+    AiDetailCommonDoubleType entrance_height = 3;
+
+    // The estimated availability of the parking option.
+    AvailabilityType availability = 4;
+
+    // Availability attributes
+    message AvailabilityType {
+      option deprecated = true;
+      // An array of availability states
+      repeated CerenceAvailabilityState values = 1;
+
+      // Confidence and constraints
+      MetaInfo meta_info = 2;
+
+      // An array of availability states
+      repeated string internal_values = 3;
+
+      // Availability state
+      enum CerenceAvailabilityState {
+        option deprecated = true;
+        // No value has been specified.
+        CERENCE_AVAILABILITY_STATE_UNSPECIFIED = 0;
+
+        // USED FOR RETURN VALUE ONLY. REPRESENTS VALUE UNKNOWN IN THIS
+        // VERSION.
+        CERENCE_AVAILABILITY_STATE_RESERVED_UNKNOWN = 1;
+
+        CERENCE_AVAILABILITY_STATE_UNAVAILABLE = 2;
+        CERENCE_AVAILABILITY_STATE_AVAILABLE = 3;
+        CERENCE_AVAILABILITY_STATE_UNKNOWN = 4;
+      }
+    }
+
+    // The parking start time (e.g.,"17:05").
+    AiDetailCommonStringType start_time = 5;
+
+    // The parking end time. If the end time is NOT specified, then a two hour
+    // parking duration is assumed (e.g.,"19:05").
+    AiDetailCommonStringType end_time = 6;
+
+    // The total parking duration in hours (e.g., 5.0).
+    AiDetailCommonDoubleType duration = 7;
+
+    // The total cost to park at this parking option from the start time to
+    // the end time. IMPORTANT: A value of "-1.0" will be returned if the
+    // parking option is NOT available during the parking period requested
+    // (e.g., 5.0).
+    AiDetailCommonDoubleType cost_rate = 8;
+  }
+
+  message EVCharging {
+    option deprecated = true;
+    // The ID of the charging station given by the underlying 3PP.
+    AiDetailCommonStringType charging_station_id = 1;
+
+    // The name of the operator
+    AiDetailCommonStringType charging_operator = 4;
+
+    Connector connectors = 5;
+
+    message Connector {
+      option deprecated = true;
+      // Provider for each connectors.
+      AiDetailCommonStringType provider = 1;
+
+      // plug types available at the charging station.
+      PlugType plug_type = 2;
+
+      // Plug type attributes
+      message PlugType {
+        option deprecated = true;
+        // An array of plug types
+        repeated CerencePlugType values = 1;
+
+        MetaInfo meta_info = 2;
+
+        // An array of plug types
+        repeated AiDetailCommonStringType internal_values = 3;
+
+        enum CerencePlugType {
+          // No value has been specified.
+          CERENCE_PLUG_TYPE_UNSPECIFIED = 0;
+
+          // Used for return value only. Represents value unknown in this
+          // version.
+          CERENCE_PLUG_TYPE_RESERVED_UNKNOWN = 1;
+          CERENCE_PLUG_TYPE_HOUSEHOLD = 2;
+          CERENCE_PLUG_TYPE_AC_TYP1 = 3;
+          CERENCE_PLUG_TYPE_AC_TYP2 = 4;
+          CERENCE_PLUG_TYPE_AC_TYP3 = 5;
+          CERENCE_PLUG_TYPE_AC_TYP_CN = 6;
+          CERENCE_PLUG_TYPE_CHADEMO = 7;
+          CERENCE_PLUG_TYPE_DC_COMBO_TYP1 = 8;
+          CERENCE_PLUG_TYPE_DC_COMBO_TYP2 = 9;
+          CERENCE_PLUG_TYPE_CEE = 10;
+          CERENCE_PLUG_TYPE_AC_CHARGER = 11;
+          CERENCE_PLUG_TYPE_DC_CHARGER = 12;
+        }
+      }
+
+      // Total number of connectors for each plug-type.
+      AiDetailCommonIntegerType total = 3;
+
+      // Number of connectors currently available for each plug-type.
+      AiDetailCommonIntegerType available = 4;
+    }
+  }
+
+  // String values
+  message AiDetailCommonStringType {
+    // An array of string values
+    repeated string values = 1;
+
+    // Confidence and constraints
+    MetaInfo meta_info = 2 [deprecated = true];
+  }
+
+  // Double values
+  message AiDetailCommonDoubleType {
+    // An array of double values
+    repeated google.protobuf.DoubleValue values = 1;
+
+    // Confidence and constraints
+    MetaInfo meta_info = 2 [deprecated = true];
+  }
+
+  // Integer values
+  message AiDetailCommonIntegerType {
+    // An array of integer values
+    repeated google.protobuf.DoubleValue values = 1;
+
+    // Confidence and constraints
+    MetaInfo meta_info = 2 [deprecated = true];
+  }
+
+  // Coordinates attributes
+  message CoordinatesType {
+    option deprecated = true;
+    // The latitude e.g., "37.8716"
+    AiDetailCommonDoubleType latitude = 1;
+
+    // The longitude e.g., "-122.2727"
+    AiDetailCommonDoubleType longitude = 2;
+  }
+
+  // Address attributes
+  message AddressType {
+    option deprecated = true;
+    // The full address label of the restaurant or business if available (e.g.,
+    // "123 Main St, San Francisco, CA").
+    AiDetailCommonStringType address_label = 1;
+
+    // The street number of the restaurant or business if available (e.g.,
+    // "123").
+    AiDetailCommonStringType street_number = 2;
+
+    // The street name of the restaurant or business if available (e.g., "Main
+    // St").
+    AiDetailCommonStringType street = 3;
+
+    // The district name of the restaurant or business if available (e.g.,
+    // "Sunset District").
+    AiDetailCommonStringType district_name = 4;
+
+    // The county name of the restaurant or business if available (e.g., "San
+    // Francisco County").
+    AiDetailCommonStringType county_name = 5;
+
+    // The city name of the restaurant or business if available (e.g., "San
+    // Francisco").
+    AiDetailCommonStringType city_name = 6;
+
+    // The state/province name or abbreviation of the restaurant or business if
+    // available (e.g., "CA").
+    AiDetailCommonStringType state_province = 7;
+
+    // The postal code of the restaurant or business if available (e.g.,
+    // "94016").
+    AiDetailCommonStringType postal_code = 8;
+
+    // The country name of the restaurant or business if available (e.g.,
+    // "United States").
+    AiDetailCommonStringType country_name = 9;
+
+    // The country code of the restaurant or business if available (e.g., "US").
+    AiDetailCommonStringType country_code = 10;
+  }
+
+  // Distance attributes
+  message DistanceType {
+    option deprecated = true;
+    // The distance from the restaurant or business to the search locus in
+    // either miles or km, depending on datapack configuration and/or market
+    // (e.g., "0.5")
+    AiDetailCommonDoubleType distance = 1;
+
+    // The detour distance from an active route to the restaurant or business.
+    // This field will ONLY be populated for route requests (e.g., "0.75")
+    AiDetailCommonDoubleType detour_distance = 2;
+
+    // Unit of measurement
+    DistanceUomType distance_uom = 3;
+
+    // Unit of measurement
+    message DistanceUomType {
+      option deprecated = true;
+      // List of unit of measurement
+      repeated cerence.cloudservices.domain.common.content.common.v1.UOM values = 1;
+
+      // Confidence and constraints
+      MetaInfo meta_info = 2;
+    }
+
+    // The ETA from the current location to the Lat/Long of the location/POI.
+    // The ETA is provided in HH:MM format where HH is the number of hours and
+    // MM is the number of the minutes (e.g., "02:05").
+    AiDetailCommonStringType eta = 4;
+  }
+
+}
+
+// Meta info included with every field.
+message MetaInfo {
+  option deprecated = true;
+  // Confidence
+  double confidence = 1;
+
+  // An array of constraints
+  repeated Constraints constraints = 2;
+
+  // Constraints attributes
+  message Constraints {
+    option deprecated = true;
+    bool relaxable = 1;
+
+    bool applied = 2;
+
+    string value = 3;
+
+    // e.g !=, <=
+    Operator operator = 4;
+  }
+}
+
+// Cost qualitative attributes
+message CostQualitativeType {
+  option deprecated = true;
+  // An array of cost qualitatives
+  repeated CerenceCostQualitativeType values = 1;
+
+  // Confidence and constraints
+  MetaInfo meta_info = 2;
+
+  // An array of cost qualitatives
+  repeated string internal_values = 3;
+
+  // Canonicalized cost
+  enum CerenceCostQualitativeType {
+    option deprecated = true;
+    // No value has been specified.
+    CERENCE_COST_QUALITATIVE_TYPE_UNSPECIFIED = 0;
+    // Used for return value only. Represents value unknown in this version.
+    CERENCE_COST_QUALITATIVE_TYPE_RESERVED_UNKNOWN = 1;
+    CERENCE_COST_QUALITATIVE_TYPE_CHEAP = 2;
+    CERENCE_COST_QUALITATIVE_TYPE_EXPENSIVE = 3;
+    CERENCE_COST_QUALITATIVE_TYPE_FREE = 4;
+    CERENCE_COST_QUALITATIVE_TYPE_MODERATE = 5;
+  }
+}

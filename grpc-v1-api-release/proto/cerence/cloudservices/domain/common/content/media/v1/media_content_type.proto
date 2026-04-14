@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.media.v1;
+
+option go_package = "cerence/cloudservices/domain/common/content/media/v1";
+option java_multiple_files = true;
+option java_outer_classname = "MediaContentTypeProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.media.v1";
+
+
+// Not specifying Channel since that was only done for SXM which is currently inactive
+// Audiobook is not specified but may be required in the future
+enum ContentType {
+  CONTENT_TYPE_UNSPECIFIED = 0;
+  CONTENT_TYPE_ALBUM = 1;
+  CONTENT_TYPE_ARTIST = 2;
+  CONTENT_TYPE_SONG = 3;
+  CONTENT_TYPE_EPISODE = 4;
+  CONTENT_TYPE_SHOW = 5;
+  CONTENT_TYPE_PLAYLIST = 6;
+  CONTENT_TYPE_RADIO_STATION = 7;
+};
+
+enum ContentCategory {
+  CONTENT_CATEGORY_UNSPECIFIED = 0;
+  CONTENT_CATEGORY_CATALOG = 1;          // Generic catalog type filter for Amazon Music
+  CONTENT_CATEGORY_LIBRARY = 2;          // Generic library type filter for Amazon Music
+  CONTENT_CATEGORY_TOP_HIT = 3;          // Generic top hit type filter for Amazon Music
+};
+
+message ExpectedResultType {
+  ContentType content_type = 1;
+  ContentCategory content_category = 2;
+}

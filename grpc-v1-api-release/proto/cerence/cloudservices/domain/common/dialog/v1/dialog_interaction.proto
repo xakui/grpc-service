@@ -1,0 +1,58 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.dialog.v1;
+
+
+import "google/protobuf/struct.proto";
+
+option go_package = "cerence/cloudservices/domain/common/dialog/v1";
+option java_multiple_files = true;
+option java_package = "com.cerence.cloudservices.domain.common.dialog.v1";
+option java_outer_classname = "InteractionProto";
+
+message Interaction {
+  string key = 1;
+
+  // Identifies the task that generated the interaction, or null if it's a top-level interaction.
+  string task_id = 2;
+
+  // Object containing the facets for the given interaction. The key is the facet name.
+  map<string, Facet> facets = 3;
+}
+
+message Facet {
+  // The escalation number for the facet.
+  uint32 escalation = 1;
+
+  // The variant number for the facet.
+  uint32 variant = 2;
+
+  // Value of the facet itself.
+  oneof value {
+    string string_value = 3;
+
+    bytes bytes_value = 4;
+
+    google.protobuf.Struct struct_value = 5;
+  }
+}

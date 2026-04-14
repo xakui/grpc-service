@@ -1,0 +1,71 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.results.ude.v1;
+
+import "cerence/cloudservices/domain/common/content/ude/v1/ude.proto";
+import "cerence/cloudservices/domain/common/content/ude/v1/traffic.proto";
+import "cerence/cloudservices/domain/common/dialog/v1/dialog_result.proto";
+import "cerence/cloudservices/domain/common/dialog/v1/dialog_streaming_response_payload.proto";
+
+option go_package = "cerence/cloudservices/domain/results/ude/v1";
+option java_multiple_files = true;
+option java_outer_classname = "UdeDomainResultsProto";
+option java_package = "com.cerence.cloudservices.domain.results.ude.v1";
+
+// The UDE response
+message UdeResponse {
+  cerence.cloudservices.domain.common.content.ude.v1.Ude content = 1;
+
+  cerence.cloudservices.domain.common.dialog.v1.PlugAndPlayDialogResult dialog = 2;
+
+  string intent_reference = 3;
+}
+
+// The first streaming chunk for UDE response, 
+// if the domain response streaming feature is enabled and the cloud intended to return the UDE response in streaming way.
+message UdeDialogStreamingResponseStart {
+  cerence.cloudservices.domain.common.content.ude.v1.Ude content = 1;
+
+  cerence.cloudservices.domain.common.dialog.v1.PlugAndPlayDialogStreamingResult dialog = 2;
+
+  string intent_reference = 3;
+}
+
+// The continuous streaming chunk for UDE response, after the UdeDialogStreamingResponseStart,
+// if the domain response streaming feature is enabled and the cloud intended to return the UDE response in streaming way.
+message UdeDialogStreamingResponseContinuation {
+  oneof continuation {
+    // Interation facet chunk
+    cerence.cloudservices.domain.common.dialog.v1.FacetChunk facet_chunk = 1;
+
+    // After all interactions' facet has been sent back to client, then send back the dialog follow up information
+    cerence.cloudservices.domain.common.dialog.v1.DialogFollowUp dialog_follow_up = 2;
+  }
+}
+
+// The Traffic response
+message TrafficResponse {
+  cerence.cloudservices.domain.common.content.ude.v1.Traffic content = 1;
+
+  string intent_reference = 2;
+}

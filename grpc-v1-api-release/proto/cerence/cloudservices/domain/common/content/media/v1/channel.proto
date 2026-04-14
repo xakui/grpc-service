@@ -1,0 +1,54 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.media.v1;
+
+import "cerence/cloudservices/domain/common/content/media/v1/sirius_xm.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/visual_content.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/genres.proto";
+
+
+option go_package = "cerence/cloudservices/domain/common/content/media/v1";
+option java_multiple_files = true;
+option java_outer_classname = "ChannelProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.media.v1";
+
+message Channel{
+  ChannelBaseInfo base_info = 1;
+
+  string description = 3;
+
+  repeated Genre genres = 4;
+
+  repeated VisualContent media=5;
+
+  //   Each provider that supports songs will have a metadata section here
+  oneof metadata{
+    SiriusXMChannelMetadata sirius_xm_metadata = 6;
+  }
+}
+
+message ChannelBaseInfo{
+  string id = 1;
+
+  string name = 2;
+}

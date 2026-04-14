@@ -1,0 +1,70 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.sing.v1;
+
+import "cerence/cloudservices/domain/common/content/sing/v1/sing_media.proto";
+import "cerence/cloudservices/domain/common/content/sing/v1/sing_prompt.proto";
+import "cerence/cloudservices/domain/common/content/common/v1/content_status.proto";
+import "google/protobuf/struct.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/sing/v1";
+option java_multiple_files = true;
+option java_outer_classname = "SingContentProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.sing.v1";
+
+message SingContent {
+  // Text to read before all the media has been played. It can be empty if there is no prompt
+  DialogPrompt begin_dialog = 1;
+  // List of songs/media to play/sing by the user
+  repeated SingMedia media = 2;
+  // Text to read after all the media has been played. It can be empty if there is no prompt
+  DialogPrompt end_dialog = 3;
+  // Action to be performed. This helps the client device to adjust the UI accordingly
+  SingAction action = 4;
+  // Tells the client in which media type to play by default the media.
+  // The user can ask to switch between types and this field tells the client what the user wants.
+  MediaType default_type = 5;
+
+  //Indicates whether the content request was successfully handled.
+  cerence.cloudservices.domain.common.content.common.v1.ContentStatusInfo content_status_info = 6;
+}
+
+//Action to be performed by the client
+
+enum SingAction {
+  SING_ACTION_UNSPECIFIED = 0;
+  // Play song. We expect the user to sing along to the song that is being played
+  SING_ACTION_PLAY = 1;
+  SING_ACTION_READ_LYRICS = 2;
+  //Preview one or multiple songs. Only one part of the song(s) is played. We don`t expect the user to sing along.
+  // Some TTS will be available to be read out before the song is played
+  SING_ACTION_PREVIEW = 3;
+  //The song is paused but the user most likely will resume at any point
+  SING_ACTION_PAUSE = 4;
+  //Only to read some text. The current song should not be played
+  SING_ACTION_DIALOG = 5;
+  //The user had abandoned the song and will do something else. The client APP should act accordingly. This means that the dialog is over
+  //If the client application receives this action. The subsequent request should come without session cookie so we start a new dialog state machine
+  SING_ACTION_END = 6;
+}
+

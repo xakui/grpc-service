@@ -1,0 +1,72 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.common.v1;
+
+import "google/protobuf/any.proto";
+
+import "cerence/cloudservices/api/common/v1/stopover_info.proto";
+
+option go_package = "cerence/cloudservices/api/common/v1";
+option java_multiple_files = true;
+option java_outer_classname = "RouteInfoProto";
+option java_package = "com.cerence.cloudservices.api.common.v1";
+
+// Route information. Indicates the route from the current location to the destination,
+// with the possibility to separately specify stopovers.
+message RouteInfo {
+  oneof route {
+    PipeDelimitedRouteInfo pipe_delimited_route_info = 1;
+
+    PolylineEncodedRouteInfo polyline_encoded_route_info = 2;
+  }
+
+  StopoverInfo stopover_info = 4;
+
+  // The additional information about the route, such as the route segment information
+  google.protobuf.Any supplementary_info = 3; 
+}
+
+message PipeDelimitedRouteInfo {
+  PipeDelimitedPoints route = 1;
+
+  PipeDelimitedPoints stopovers = 2;
+}
+
+message PolylineEncodedRouteInfo {
+  PolylineEncodedPoints route = 1;
+
+  PolylineEncodedPoints stopovers = 2;
+}
+
+message PolylineEncodedPoints {
+  // Heremaps flexible-polyline encoded points per https://github.com/heremaps/flexible-polyline
+  string polyline_encoded_points = 1;
+}
+
+message PipeDelimitedPoints {
+  // The coordinate points need to be provided in a pipe-delimited string format, 
+  // where each coordinate pair is separated by a pipe (|) and each coordinate within
+  // a pair is separated by a comma (,).
+  // Example: "48.779,9.037|48.535,9.629|48.387,9.802|48.358,10.721|48.155,11.401"
+  string pipe_delimited_points = 1;
+}

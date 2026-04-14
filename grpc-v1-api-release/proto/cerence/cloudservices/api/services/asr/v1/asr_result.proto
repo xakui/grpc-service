@@ -1,0 +1,70 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.services.asr.v1;
+
+import "cerence/cloudservices/api/common/v1/concept.proto";
+import "cerence/cloudservices/api/services/asr/v1/format_word.proto";
+
+import "google/api/field_behavior.proto";
+
+option go_package = "cerence/cloudservices/api/services/asr/v1";
+option java_multiple_files = true;
+option java_outer_classname = "AsrResultProto";
+option java_package = "com.cerence.cloudservices.api.services.asr.v1";
+
+// Speech recognition result corresponding to the portion of audio that is currently being processed
+message AsrResult {
+  // List of results for the speech recognition
+  repeated ResultAlternative result_alternatives = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message ResultAlternative {
+  // The formatted sentence consists of these words
+  repeated FormatWord words = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The formatted output sentence
+  string sentence = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The confidence estimate between 0.0 and 1.0. A higher number
+  // indicates an estimated greater likelihood that the recognized words are
+  // correct. This field is set only for the top alternative of a non-streaming
+  // result or, of a streaming result that contains FinalResult.
+  // This field is not guaranteed to be accurate and users should not rely on it
+  // to be always provided.
+  // The default of 0.0 is a sentinel value indicating `confidence` was not set.
+  float confidence = 3;
+}
+
+// Report on the recognition resource used in this recognition session.
+message RecognitionResourceMetaInformation {
+  // The concept identifying a recognition resource used in the request.
+  cerence.cloudservices.api.common.v1.Concept concept = 1;
+
+  // The status information of a recognition resource.
+  RecognitionResourceStatus recognition_resource_status = 2;
+}
+
+message RecognitionResourceStatus {
+  // A flag that indicates if the recognition resource version is synchronized with the server version.
+  bool synched_user_data = 2;
+}

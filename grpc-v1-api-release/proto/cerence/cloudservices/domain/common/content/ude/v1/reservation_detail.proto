@@ -1,0 +1,59 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.ude.v1;
+
+import "cerence/cloudservices/domain/common/content/common/v1/common_detail.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/ude/v1";
+option java_multiple_files = true;
+option java_outer_classname = "ReservationDetailProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.ude.v1";
+
+message ReservationDetail {
+  //List of providers that supports reservation for the place
+  repeated Provider providers = 1;
+}
+
+message Provider {
+  //The name of the reservation provider
+  string name = 1;
+
+  //Reservation provider's identification number associated with this reservation
+  string id = 2;
+
+  //The URL for an image associated with the restaurant
+  string photo_url = 3;
+
+  //The URL for the restaurant
+  string restaurant_page_url = 4;
+
+  //The price range of the restaurant $ to $$$$ scale
+  string price = 5;
+
+  //A container for details about the rating for the place.
+  cerence.cloudservices.domain.common.content.common.v1.Rating rating = 6;
+
+  //The popularity of the restaurant based on the number of review count, more the value more popular the restaurant
+  string popularity = 7;
+
+}

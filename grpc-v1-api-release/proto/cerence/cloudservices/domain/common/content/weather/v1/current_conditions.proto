@@ -1,0 +1,78 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.weather.v1;
+
+import "cerence/cloudservices/domain/common/content/common/v1/common_detail.proto";
+import "cerence/cloudservices/domain/common/content/weather/v1/common_detail.proto";
+import "cerence/cloudservices/domain/common/content/weather/v1/air_quality.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/weather/v1";
+option java_multiple_files = true;
+option java_outer_classname = "CurrentConditionsProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.weather.v1";
+
+message CurrentConditions {
+  // ISO_OFFSET_DATE_TIME format YYYY-MM-DDThh:mm:ssTZD, 
+  // ex "2020-04-09T13:30:00+02:00"
+  string date_time = 1;
+
+  // Indicates whether this hour is during the day
+  bool day_time = 2;
+
+  // Weather icon for the current conditions.
+  Icon icon = 3;
+
+  // The short version of the text associated with the current
+  // weather conditions.
+  string short_text = 4;
+
+  // A text-to-speech (TTS) string that describes the current conditions.
+  string tts = 5;
+
+  // The percent of the sky that is covered with clouds.
+  int32 cloud_cover = 6;
+
+  // The current humidity percentage.
+  int32 humidity = 7;
+
+  // A level for the current humidity.
+  HumidityCode humidity_code = 8;
+
+  // Temperature information, including unit of measurement.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement temperature = 9;
+
+  // Temperature information, including unit of measurement.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement feels_like = 10;
+
+  // Air pressure information.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement pressure = 11;
+
+  // The direction and speed of the wind.
+  Wind wind = 12;
+
+  // The UV index, with description, for the location.
+  UV uv = 13;
+
+  // Contains many different measurements of air quality.
+  AirQuality air_quality = 14;
+}

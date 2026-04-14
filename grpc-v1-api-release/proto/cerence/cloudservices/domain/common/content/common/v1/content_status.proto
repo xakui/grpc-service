@@ -1,0 +1,80 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.common.v1;
+
+option go_package = "cerence/cloudservices/domain/common/content/common/v1";
+option java_multiple_files = true;
+option java_outer_classname = "ContentStatusProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.common.v1";
+
+message ContentStatusInfo {
+  ContentStatus content_status = 1;
+
+  ContentFailureReason content_failure_reason = 2;
+
+  NoContentReason no_content_reason = 3;
+}
+
+enum ContentStatus {
+  CONTENT_STATUS_UNSPECIFIED = 0;
+  CONTENT_STATUS_NO_CONTENT = 1; // Returned when there is no content but not considered a failure
+  CONTENT_STATUS_FAILURE = 2; // Returned when there is no content due to a failure
+  CONTENT_STATUS_CONTENT = 3; // Returned when there is content
+}
+
+// The reason that there is no content returned
+enum ContentFailureReason {
+  // default / not present
+  CONTENT_FAILURE_REASON_UNSPECIFIED = 0;
+
+  // Any failure that does not have a more specific code, such as an
+  // internal system error.
+  CONTENT_FAILURE_REASON_GENERIC_ERROR = 1;
+
+  // A timeout waiting for the provider response, a network error reaching
+  // the provider, or any other failure retrieving content from the provider not covered by "CONTENT_FAILURE_REASON_CONTENT_UNSUPPORTED"
+  CONTENT_FAILURE_REASON_FAILURE_TO_RETRIEVE_FROM_PROVIDER = 2;
+}
+
+enum NoContentReason {
+  NO_CONTENT_REASON_UNSPECIFIED = 0;
+
+  // Returned when the provider returns successfully with no matches or the feature is not supported by the provider so
+  // no results are expected.
+  NO_CONTENT_REASON_NO_RESULTS = 1;
+
+  // The requested functionality is not yet handled by the cloud or there are no slot mentions that indicate what to
+  // query, ex "Find near me".
+  NO_CONTENT_REASON_QUERY_UNSUPPORTED = 2;
+
+  // An anaphora reference such as "there" or "him" could not be resolved.
+  NO_CONTENT_REASON_UNRESOLVED_ANAPHORA = 3;
+
+  // Returned when the client does not provide the necessary input parameter to resolve a spoken location reference
+  // such as "destination", "route", "work" or "home".
+  NO_CONTENT_REASON_MISSING_LOCATION_REFERENCE_INPUT_PARAMETER = 4;
+
+  // Returned for flows that have a step to resolve the location but the location was not found, such as for weather
+  // queries with a spoken location.
+  NO_CONTENT_REASON_LOCATION_NOT_FOUND = 5;
+}

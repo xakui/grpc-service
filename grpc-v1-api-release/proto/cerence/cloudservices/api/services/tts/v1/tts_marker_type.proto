@@ -1,0 +1,37 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.services.tts.v1;
+
+option go_package = "cerence/cloudservices/api/services/tts/v1";
+option java_multiple_files = true;
+option java_outer_classname = "TtsMarkerTypeProto";
+option java_package = "com.cerence.cloudservices.api.services.tts.v1";
+
+enum TtsMarkerType {
+  TTS_MARKER_TYPE_UNSPECIFIED = 0;
+  TTS_MARKER_TYPE_PARAGRAPH = 1; // For Paragraph markers, Input text must have the markup: <ESC>\para\
+  TTS_MARKER_TYPE_SENTENCE = 2; // For Sentences markers, Input text must have the markup:  <ESC>\mrk=b1\
+  TTS_MARKER_TYPE_WORD = 3; // For Words markers
+  TTS_MARKER_TYPE_PHONEME = 4; // For Phoneme markers associated to a phonetic
+  TTS_MARKER_TYPE_BOOKMARK = 5; // For Bookmark markers
+}

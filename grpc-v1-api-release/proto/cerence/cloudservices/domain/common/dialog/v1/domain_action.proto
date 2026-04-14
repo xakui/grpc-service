@@ -1,0 +1,101 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.dialog.v1;
+
+
+option go_package = "cerence/cloudservices/domain/common/dialog/v1";
+option java_multiple_files = true;
+option java_package = "com.cerence.cloudservices.domain.common.dialog.v1";
+option java_outer_classname = "DomainActionProto";
+
+message SelfServiceDomainAction {
+  string domain = 1;
+
+  string action = 2;
+}
+
+message CerenceDomainAction {
+  CerenceDomain domain = 1;
+
+  CerenceAction action = 2;
+}
+
+enum CerenceDomain {
+  CERENCE_DOMAIN_UNSPECIFIED = 0;
+  CERENCE_DOMAIN_CALCULATOR = 1;
+  CERENCE_DOMAIN_CITY_EVENTS = 2;
+  CERENCE_DOMAIN_CURRENCY_CONVERTER = 3;
+  CERENCE_DOMAIN_DATE_AND_TIME = 4;
+  CERENCE_DOMAIN_ENTERTAIN_ME = 5;
+  CERENCE_DOMAIN_FLIGHT_STATUS = 6;
+  CERENCE_DOMAIN_GEO_QUIZ = 7;
+  CERENCE_DOMAIN_PUBLIC_HOLIDAYS = 8;
+  CERENCE_DOMAIN_SCHOOL_VACATION = 9;
+  CERENCE_DOMAIN_SPORTS = 10;
+  CERENCE_DOMAIN_STOCKS = 11;
+  CERENCE_DOMAIN_UNIT_CONVERTER = 12;
+  CERENCE_DOMAIN_WESTERN_HOROSCOPE = 13;
+  CERENCE_DOMAIN_GKQA = 14;
+  CERENCE_DOMAIN_POI_KNOWLEDGE = 15;
+  CERENCE_DOMAIN_BROWSE = 16;
+  CERENCE_DOMAIN_NEWS = 17;
+  CERENCE_DOMAIN_CHAT = 18;
+}
+
+enum CerenceAction {
+  CERENCE_ACTION_UNSPECIFIED = 0;
+  CERENCE_ACTION_HELP = 1;
+  CERENCE_ACTION_QUIT = 2;
+  CERENCE_ACTION_NOT_SUPPORTED = 3;
+  CERENCE_ACTION_CALCULATION = 4;
+  CERENCE_ACTION_EVENT_SUGGESTION = 5;
+  CERENCE_ACTION_EVENT_DETAILS = 6;
+  CERENCE_ACTION_CONVERSION = 7;
+  CERENCE_ACTION_EXCHANGE_RATE = 8;
+  CERENCE_ACTION_CURRENCY_COUNTRY = 9;
+  CERENCE_ACTION_CURRENT_DATE_TIME = 10;
+  CERENCE_ACTION_DATE_WHEN = 11;
+  CERENCE_ACTION_TIMEZONE = 12;
+  CERENCE_ACTION_DURATION = 13;
+  CERENCE_ACTION_ENTERTAIN = 14;
+  CERENCE_ACTION_SCHEDULE = 15;
+  CERENCE_ACTION_TERMINAL = 16;
+  CERENCE_ACTION_ANSWER_QUESTION = 17;
+  CERENCE_ACTION_SCORE = 18;
+  CERENCE_ACTION_COUNT = 19;
+  CERENCE_ACTION_LEAGUE_STANDINGS = 20;
+  CERENCE_ACTION_TEAM_STATS = 21;
+  CERENCE_ACTION_GAME_RESULT = 22;
+  CERENCE_ACTION_GROUPS = 23;
+  CERENCE_ACTION_STOCK = 24;
+  CERENCE_ACTION_PREDICTION = 25;
+  CERENCE_ACTION_LUCKY_ITEM = 26;
+  CERENCE_ACTION_SIGN = 27;
+  CERENCE_ACTION_FAQ = 28;
+  CERENCE_ACTION_LONG_ANSWER = 29;
+  CERENCE_ACTION_SHORT_ANSWER = 30;
+  CERENCE_ACTION_BROWSE = 31;
+  CERENCE_ACTION_FAILURE = 33;
+  CERENCE_ACTION_NEWS = 34;
+  CERENCE_ACTION_CHAT = 35;
+}

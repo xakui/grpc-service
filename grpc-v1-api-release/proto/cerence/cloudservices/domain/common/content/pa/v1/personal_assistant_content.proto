@@ -1,0 +1,54 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.pa.v1;
+
+import "cerence/cloudservices/api/common/v1/personal_assistant_context.proto";
+
+import "google/protobuf/struct.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/pa/v1";
+option java_multiple_files = true;
+option java_outer_classname = "PersonalAssistantContentProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.pa.v1";
+
+message PersonalAssistantContent {
+  string request_id = 1;
+
+  cerence.cloudservices.api.common.v1.PersonalAssistantContext context = 2;
+
+  // For now always pa_provider
+  string type = 3;
+
+  ContentInfo content_info = 4;
+
+  string original_response_format = 5;
+
+  string tts_text = 6;
+
+  // Client returning status about actions executed in previous step. Would not be used at the start of a dialog.
+  repeated google.protobuf.Struct actions = 7;
+}
+
+message ContentInfo {
+  string response_format = 1;
+}

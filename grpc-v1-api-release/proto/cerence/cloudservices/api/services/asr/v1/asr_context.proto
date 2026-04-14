@@ -1,0 +1,68 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.services.asr.v1;
+
+import "cerence/cloudservices/api/common/v1/context_source.proto";
+
+import "google/api/field_behavior.proto";
+import "google/protobuf/wrappers.proto";
+import "google/type/latlng.proto";
+
+option go_package = "cerence/cloudservices/api/services/asr/v1";
+option java_multiple_files = true;
+option java_outer_classname = "AsrContextProto";
+option java_package = "com.cerence.cloudservices.api.services.asr.v1";
+
+// This message describes the context information that can be passed in ASR requests.
+message Context {
+  NavigationContext navigation_context = 1;
+
+  UIContext ui_context = 2;
+}
+
+// The context describing the navigation data.
+message NavigationContext {
+  // The current location of the vehicle
+  google.type.LatLng current_location = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The method by which the current location was determined
+  cerence.cloudservices.api.common.v1.LocationSource current_location_source = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The destination of the vehicle
+  google.type.LatLng destination_location = 3;
+
+  // Additional contextual location other than current and destination locations.
+  google.type.LatLng target_location = 4;
+}
+
+// The context describing the UI state of the vehicle.
+message UIContext {
+  // Current text present on the screen.
+  google.protobuf.StringValue text = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Cursor start position within the text parameter.
+  google.protobuf.Int32Value start = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Cursor end position within the text parameter.
+  google.protobuf.Int32Value end = 3 [(google.api.field_behavior) = REQUIRED];
+}

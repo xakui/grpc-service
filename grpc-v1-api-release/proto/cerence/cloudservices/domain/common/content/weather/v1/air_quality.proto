@@ -1,0 +1,128 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.weather.v1;
+
+
+import "google/type/latlng.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/weather/v1";
+option java_multiple_files = true;
+option java_outer_classname = "AirQualityProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.weather.v1";
+
+message AirQuality {
+
+  // The air quality index at the location.
+  int32 index = 1;
+
+  // The measurement of fine particles, or particulate matter 2.5 in μg / m3.
+  int32 particulate_matter2_5 = 2;
+
+  // The PM-10 measurement in μg / m3.
+  int32 particulate_matter10 = 3;
+
+  // The ozone level in ppm.
+  int32 ozone = 4;
+
+  // The amount of carbon monoxide in the air in ppm.
+  int32 carbon_monoxide = 5;
+
+  // The amount of nitrogen monoxide in the air in ppm.
+  int32 nitrogen_monoxide = 6;
+
+  // The amount of sulfur monoxide in the air in ppm.
+  int32 sulfur_monoxide = 7;
+
+  // The amount of sulfur dioxide in the air in ppm.
+  int32 sulfur_dioxide = 8;
+
+  // The amount of lead in the air.
+  int32 lead = 9;
+
+  // Detail of the overall air quality.
+  AirQualityDetail overall = 10;
+
+  // Container for air quality factor details.
+  repeated AirQualityDetail details = 11;
+
+  // Container for attribution for the air quality information,
+  // such as the provider name and the station name.
+  repeated AirQualityAttribution attributions = 12;
+}
+
+message AirQualityAttribution {
+  // The identification code for the provider of this information.
+  string id = 1;
+
+  // The name of the provider. This value is localized.
+  string text = 2;
+
+  // The URL for the provider.
+  string url = 3;
+
+  // The date and time for these conditions in ISO_OFFSET_DATE_TIME
+  // format, as follows: YYYY-MM-DDThh:mm:ssTZD. 
+  // For example, "2020-1230T20:18:40+-00:00"
+  string measurement_date_time = 4;
+
+  // The station name for the information source.
+  string station_name = 5;
+
+  // The station address for the information source.
+  string station_address = 6;
+
+  // The location for the source station.
+  google.type.LatLng station_coordinate = 7;
+}
+
+message AirQualityDetail {
+  // The date and time for these conditions in ISO_OFFSET_DATE_TIME format,
+  //   as follows: YYYY-MM-DDThh:mm:ssTZD. For example,
+  // 2020-12-30T20:18:40+-00:00"
+  string date_time = 1;
+
+  // Index for the given air quality factor and the
+  // situation. For example, this value could be:
+  // - "GOOD"
+  // - "SEVERE"
+  string index = 2;
+
+  // The grade of the air quality factor index received
+  // from the data provider.
+  int32 broker_index = 3;
+
+  // The name of the air quality factor. For example,
+  // this value could be:
+  // - "PM2.5"
+  // - "O3"
+  string name = 4;
+
+  // The description of the air quality factor.
+  string description = 5;
+
+  // The value of the air quality factor
+  double value = 6;
+
+  // The unit of the air quality factor.
+  string unit = 7;
+}

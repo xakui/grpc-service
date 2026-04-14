@@ -1,0 +1,127 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.weather.v1;
+
+import "cerence/cloudservices/domain/common/content/common/v1/common_detail.proto";
+import "cerence/cloudservices/domain/common/content/weather/v1/common_detail.proto";
+import "cerence/cloudservices/domain/common/content/weather/v1/current_conditions.proto";
+import "cerence/cloudservices/domain/common/content/weather/v1/daily_forecast.proto";
+import "cerence/cloudservices/domain/common/content/weather/v1/hourly_forecast.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/weather/v1";
+option java_multiple_files = true;
+option java_outer_classname = "SkiAreaProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.weather.v1";
+
+message SnowDepth {
+  // The snow depth at the peak of the mountain.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement peak = 1;
+
+  // The snow depth at the base of the mountain.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement base = 2;
+}
+
+message SkiArea {
+  // The identification number of the ski area.
+  string id = 1;
+
+  // The location of the ski area.
+  LocationV1 location = 2;
+
+  // The distance from the provided search location.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement distance = 3;
+
+  // Text that describes the primary surface condition.
+  string primary_surface_condition = 4;
+
+  // The snow depth for this ski area at the base and the peak.
+  SnowDepth snow_depth = 5;
+
+  // The number of lifts currently open at this ski area.
+  int32 lift_open = 6;
+
+  // The total number of lifts at this ski area.
+  int32 lift_total = 7;
+
+  // The distance covered by the open ski runs at this ski area.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement run_open_distance = 8;
+
+  // The distance covered by the ski runs at this ski area.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement run_total_distance = 9;
+
+  // Boolean that indicates if cross country ski trails are available
+  bool cross_country_trails = 10;
+
+  //  The distance to the closest cross country ski trail in this ski area.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement cross_country_distance = 11;
+
+  // Boolean that indicates if toboggan trails are available
+  bool toboggan_trails = 12;
+
+  // The distance to the closest toboggan trail in this ski area.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement toboggan_distance = 13;
+
+  // The altitude of the base of this ski area
+  cerence.cloudservices.domain.common.content.common.v1.Measurement altitude_base = 14;
+
+  // The altitude of the peak of this ski area.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement altitude_peak = 15;
+
+  // The latest date that it snowed at this ski area.
+  // The date is in the format is YYYY-MM-DD, ex  "2016-12-31"
+  string last_snow_date = 16;
+
+  // The amount of snow in the last snowfall.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement last_snow_amount = 17;
+
+  // Boolean that indicates if night skiing is available at this ski area.
+  bool night_skiing = 18;
+
+  // Boolean that indicates if the night skiing feature is open.
+  bool night_skiing_open = 19;
+
+  // Boolean that indicates if a fun park is available.
+  bool fun_park = 20;
+
+  // Boolean that indicates if the fun park is open.
+  bool fun_park_open = 21;
+
+  // The expiration date and time of this report in ISO_OFFSET_DATE_TIME format
+  // YYYY-MM-DDThh:mm:ssTZD, for example "2020-04-09T13:30:00+02:00".
+  string last_updated = 22;
+
+  // Boolean that indicates if a valley run is available.
+  bool has_valley_run = 23;
+
+  // Text that describes the status of the valley run element.
+  string valley_run_open = 24;
+
+  // An element that contains the current weather conditions at this ski area.
+  CurrentConditions current_conditions = 25;
+
+  // An element that contains one or more dailyForecast elements.
+  repeated DailyForecast daily_forecasts = 26;
+
+  // An element that contains one or more hourlyForecast elements.
+  repeated HourlyForecast hourly_forecasts = 27;
+}

@@ -1,0 +1,65 @@
+// Copyright © 2025-2026 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.services.device_heartbeat.v1;
+
+import "cerence/cloudservices/api/services/device_heartbeat/v1/diagnostic.proto";
+
+option go_package = "cerence/cloudservices/api/services/device_heartbeat/v1";
+option java_multiple_files = false;
+option java_outer_classname = "DeviceHeartbeatApiProto";
+option java_package = "com.cerence.cloudservices.api.services.device_heartbeat.v1";
+
+service DeviceHeartbeatService {
+
+  // Performs a device heartbeat request from client side.
+  rpc DeviceHeartbeat (DeviceHeartbeatRequest) returns (stream StreamingDeviceHeartbeatResponse);
+}
+
+message DeviceHeartbeatRequest {
+  // The device id of the client. The value must be:
+  //  - Unique per device;
+  //  - Stable and reliable;
+  //  - Not empty and must have a maximum size of 64 characters;
+  //  - The same device id used in other Cerence Cloud Services requests from the same device.
+  string device_id = 1;
+
+  // A string that uniquely identifies the user making the request. The value must not be empty and must have a
+  // maximum size of 64 characters.
+  // It shall be the same user id used in other Cerence Cloud Services requests.
+  string user_id = 2;
+
+  // Cerence SDK version
+  string sdk_version = 3;
+}
+
+message StreamingDeviceHeartbeatResponse {
+  oneof streaming_result {
+    Metadata metadata = 1;
+  }
+}
+
+message Metadata {
+  VersionInformation version_info = 1;
+
+  DiagnosticInformation diagnostic_info = 2;
+}

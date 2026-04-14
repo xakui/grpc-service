@@ -1,0 +1,167 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.services.user_data.v1;
+
+import "cerence/cloudservices/api/services/user_data/v1/input_data.proto";
+import "cerence/cloudservices/api/services/user_data/v1/user_data_types.proto";
+import "cerence/cloudservices/api/services/user_data/v1/diagnostic.proto";
+
+import "google/rpc/status.proto";
+
+option go_package = "cerence/cloudservices/api/services/user_data/v1";
+option java_multiple_files = true;
+option java_outer_classname = "UserDataApiProto";
+option java_package = "com.cerence.cloudservices.api.services.user_data.v1";
+
+// Service that implements the Cerence API for User Data requests
+service UserDataUploadService {
+
+  // Performs synchronous upload user raw data
+  rpc FullUpload (FullUploadRequest) returns (stream FullUploadResponse);
+
+  // Performs synchronous streaming upload user raw data
+  rpc StreamingFullUpload (stream StreamingFullUploadRequest) returns (stream StreamingFullUploadResponse);
+
+  // Delete user data including raw data and vary&inflect data
+  rpc Delete (DeleteRequest) returns (stream DeleteResponse);
+}
+
+message FullUploadRequest {
+  RequestData request_data = 1;
+
+  repeated DataBlock data_block = 2;
+
+  UploadDone upload_done = 3;
+}
+
+
+// Userdata upload request.
+// A completed request parameters has three parts: one user metadata, multiple data block, one upload done.  They must be continuous.
+message StreamingFullUploadRequest {
+  oneof payload {
+
+    // Only one. User request metadata contains user related information. First transmitted message in the RPC input
+    // stream.
+    RequestData request_data = 1;
+
+    // Transmitted one data block each time, and support multiple.
+    DataBlock data_block = 2;
+
+    // Only one.  Last transmitted message in the RPC input stream.
+    UploadDone upload_done = 3;
+  }
+}
+
+message FullUploadResponse {
+  // If set, returns a [google.rpc.Status][google.rpc.Status] message that
+  // specifies the status of the current response.
+
+  // google.rpc.Status messages that can be returned:
+  // | Code | Message           | Description
+  // ----------------------------------------------------------------------------------------
+  // | 3    | Invalid Argument  | Invalid request from client.
+  // | 7    | PermissionDenied  | Request with invalid subscription.
+  // | 13   | Internal          | Error from server or downstream services.
+  google.rpc.Status status = 3;
+
+  oneof full_upload_result {
+    UploadResponseBody body = 1;
+
+    // The metadata information will always be returned last (even for error scenarios).
+    Metadata metadata = 2;
+  }
+}
+
+message StreamingFullUploadResponse {
+  // If set, returns a [google.rpc.Status][google.rpc.Status] message that
+  // specifies the status of the current response.
+
+  // google.rpc.Status messages that can be returned:
+  // | Code | Message           | Description
+  // ----------------------------------------------------------------------------------------
+  // | 3    | Invalid Argument  | Invalid request from client.
+  // | 7    | PermissionDenied  | Request with invalid subscription.
+  // | 13   | Internal          | Error from server or downstream services.
+  google.rpc.Status status = 3;
+
+  oneof streaming_full_upload_result {
+    UploadResponseBody body = 1;
+
+    Metadata metadata = 2;
+  }
+}
+
+
+// An error will be sent if the server does not recognize the uploaded data, the server refuses the data upload, or
+// any other server error occurs.
+message UploadResponseBody {
+  // True if not all data items were uploaded because the maximum list size was reached, false otherwise.
+  bool max_collection_size_reached = 1;
+
+  // <int>default 10000 (or whatever limit is configured on server side).
+  int32 max_collection_size_allowed = 2;
+}
+
+// The metadata information
+message Metadata {
+  VersionInformation version_info = 1;
+
+  DiagnosticInformation diagnostic_info = 2;
+}
+
+// The version information
+message VersionInformation {
+  // The version stamp of Cerence Cloud
+  string cerence_cloud_version = 1;
+}
+
+message DeleteRequest {
+  oneof payload {
+    DeleteAll all = 1;
+  }
+
+  // Response Version
+  string response_version = 2;
+}
+
+message DeleteResponse {
+  // If set, returns a [google.rpc.Status] message that
+  // specifies the status of the current response.
+
+  // google.rpc.Status messages that can be returned:
+  // | Code | Message           | Description
+  // ----------------------------------------------------------------------------------------
+  // | 3    | Invalid Argument  | Invalid request from client.
+  // | 7    | PermissionDenied  | Request with invalid subscription.
+  // | 13   | Internal          | Error from server or downstream services.
+  google.rpc.Status status = 1;
+
+  oneof delete_result {
+    DeleteResponseBody body = 2;
+
+    Metadata metadata = 3;
+  }
+}
+
+message DeleteResponseBody {
+}

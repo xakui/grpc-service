@@ -1,0 +1,236 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.common.v1;
+
+
+import "google/protobuf/timestamp.proto";
+import "google/type/latlng.proto";
+import "google/type/dayofweek.proto";
+
+import "cerence/cloudservices/api/common/v1/context_source.proto";
+
+option go_package = "cerence/cloudservices/api/common/v1";
+option java_multiple_files = false;
+option java_package = "com.cerence.cloudservices.api.common.v1";
+option java_outer_classname = "InteractionHistoryProto";
+
+message InteractionHistory {
+  repeated Reference references = 1;
+
+  string domain = 2;
+
+  string intent = 3;
+
+  InputType input_type = 4;
+
+  google.protobuf.Timestamp time_stamp = 5;
+
+  string alternatives = 6;
+
+  Context context = 7;
+
+  message Reference {
+    ReferType refer_type = 1;
+
+    string value = 2;
+
+    string name = 3;
+
+    string canonical = 4;
+
+    Data data = 5;
+
+    Source source = 6;
+
+    Role role = 7;
+
+    string lemma = 8;
+
+    string phonetic = 9;
+
+    enum Type {
+      TYPE_UNSPECIFIED = 0;
+      TYPE_REF_PERSON = 1;
+      TYPE_REF_PLACE = 2;
+      TYPE_REF_MOMENT = 3;
+      TYPE_REF_THING = 4;
+      TYPE_REF_CONTENT = 5;
+      TYPE_REF_QUANTITY = 6;
+      TYPE_REF_MUSIC = 7;
+      TYPE_REF_VIDEO = 8;
+    }
+
+    enum Source {
+      SOURCE_UNSPECIFIED = 0;
+      SOURCE_EXPLICIT = 1;
+      SOURCE_INFERRED = 2;
+      SOURCE_ANSWER = 3;
+    }
+
+    enum Role {
+      ROLE_UNSPECIFIED = 0;
+      ROLE_FROM = 1;
+      ROLE_TO = 2;
+      ROLE_LOCAL = 3;
+      ROLE_REMOTE = 4;
+    }
+
+    message Data {
+      oneof data {
+        PlaceData place = 1;
+
+        MomentData date_time = 2;
+
+        QuantityData quantity = 3;
+
+        PersonData person = 4;
+
+        MusicData music = 5;
+
+        VideoData video = 6;
+      }
+    }
+
+    message ReferType {
+      Type type = 1;
+
+      repeated string sub_types = 2;
+    }
+  }
+
+  enum InputType {
+    INPUT_TYPE_UNSPECIFIED = 0;
+    INPUT_TYPE_SPEECH = 1;
+    INPUT_TYPE_HAPTIC = 2;
+    INPUT_TYPE_TEXT = 3;
+  }
+
+  message PlaceData {
+    string name = 1;
+
+    google.type.LatLng geo_position = 2;
+
+    Address address = 3;
+
+    string phone_number = 4;
+  }
+
+
+  message Address {
+    string room_number = 1;
+
+    string house_number = 2;
+
+    string street = 3;
+
+    string cross_street = 4;
+
+    string postal_code = 5;
+
+    string district = 6;
+
+    string city = 7;
+
+    string state = 8;
+
+    string country = 9;
+  }
+
+  message MomentData {
+    int32 seconds = 1;
+
+    int32 min = 2;
+
+    int32 hour = 3;
+
+    int32 mday = 4;
+
+    google.type.DayOfWeek weekday = 5;
+
+    int32 month = 6;
+
+    int32 year = 7;
+
+    string name = 8;
+
+    bool is_ambiguous_time = 9;
+
+    bool is_ambiguous_date = 10;
+  }
+
+  message QuantityData {
+    double scalar = 1;
+
+    string unit = 2;
+  }
+
+  message PersonData {
+    string contact = 1;
+
+    string artist = 2;
+
+    string phone_number = 3;
+
+    Gender gender = 4;
+  }
+
+  message MusicData {
+    string song = 1;
+
+    string singer = 2;
+
+    string composer = 3;
+
+    string band = 4;
+
+    string album = 5;
+  }
+
+  message VideoData {
+    string title = 1;
+
+    string actor = 2;
+
+    string director = 3;
+
+    string provider = 4;
+  }
+
+  enum Gender {
+    GENDER_UNSPECIFIED = 0;
+    GENDER_MALE = 1;
+    GENDER_FEMALE = 2;
+  }
+
+  message Context {
+    SpeakerContext speaker_context = 1;
+  }
+
+  message SpeakerContext {
+    // Indicates which row the utterance came from
+    cerence.cloudservices.api.common.v1.UtteranceRow utterance_row = 1;
+
+    // Indicates which seat the utterance came from
+    cerence.cloudservices.api.common.v1.UtteranceSeat utterance_seat = 2;
+  }
+}

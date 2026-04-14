@@ -1,0 +1,199 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.services.asr.v1;
+
+import "cerence/cloudservices/api/common/v1/audio_format.proto";
+import "cerence/cloudservices/api/common/v1/concept.proto";
+import "cerence/cloudservices/api/common/v1/profanity_filter.proto";
+import "cerence/cloudservices/api/common/v1/query_status.proto";
+import "cerence/cloudservices/api/services/asr/v1/asr_context.proto";
+import "cerence/cloudservices/api/services/asr/v1/asr_result.proto";
+import "cerence/cloudservices/api/services/asr/v1/diagnostic.proto";
+import "cerence/cloudservices/api/services/user_data/v1/input_data.proto";
+
+import "google/api/field_behavior.proto";
+import "google/protobuf/wrappers.proto";
+import "google/rpc/status.proto";
+
+option go_package = "cerence/cloudservices/api/services/asr/v1";
+option java_multiple_files = true;
+option java_outer_classname = "AsrApiProto";
+option java_package = "com.cerence.cloudservices.api.services.asr.v1";
+
+// Service that implements the Cerence API for ASR requests
+service AsrQueryService {
+
+  // Performs an ASR query request.
+  rpc StreamingAsrQuery (stream StreamingAsrQueryRequest) returns (stream StreamingAsrQueryResponse);
+}
+
+// The top-level message sent by the client for the 'StreamingAsrQuery' method.
+// Multiple 'StreamingAsrQueryRequest' messages are sent.  The first message must contain a 'request_data'
+// message and must not contain 'audio'.  All subsequent messages must contain 'audio' and must not contain a
+// 'request_data' message.
+message StreamingAsrQueryRequest {
+  // The streaming request, which is either the request data or the audio.
+  oneof streaming_request {
+    // Provides information to the cloud services api that is required to complete the ASR query.
+    // The first 'StreamingAsrQueryRequest' message must contain a 'request_data' message.
+    RequestData request_data = 1;
+
+    // The audio data to be recognized.  Sequential chunks of audio data are sent in sequential
+    // 'StreamingAsrQueryRequest' messages.  The first 'StreamingAsrQueryRequest' message must not
+    // contain 'audio' data and all subsequent 'StreamingAsrQueryRequest' messages must contain 'audio' data.
+    // The audio bytes must be encoded as specified in the 'RequestData' message 'audio_format' field.
+    // Note: as with all bytes fields, proto buffers use a pure binary representation (not base64).
+    bytes audio = 2;
+  }
+}
+
+
+// Provides information on how to process the request.
+message RequestData {
+  // A string that uniquely identifies the user making the request. The value must not be empty and must have a maximum size of 64 characters.
+  string user_id = 1;
+
+  // Format of the audio that will be sent from client.
+  cerence.cloudservices.api.common.v1.AudioFormat audio_format = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Allows the client to determine whether obscene and profane language should be filtered (obscured) in the results.
+  cerence.cloudservices.api.common.v1.ProfanityFilter profanity_filter = 3;
+
+  // Provides the context information that can be passed in ASR requests.
+  Context context = 4;
+
+  // The logging information that can be passed in the request.
+  Logging logging = 5;
+
+  // Product Improvements
+  ProductImprovements product_improvements = 6;
+
+  // The device id allows to differentiate between devices. The value must not be empty and must have a maximum size of 64 characters.
+  string device_id = 7;
+
+  // A list of user data resources to use with the request.
+  repeated UserDataResource user_data_resources = 8;
+
+  // Response Version
+  string response_version = 9;
+
+  // A list of transient data (custom word resources) to use with the request.
+  // Provides "hints" in order to favor specific words and phrases in the results
+  repeated InlineGrammarResource inline_grammar_resources = 10;
+}
+
+message Logging {
+  // Client dialog id. Provide the same value for all requests made within a dialog. Must be a globally unique id.
+  string client_dialog_id = 1;
+
+  // Identifies an interaction within a dialog. Must be a valid uuid.
+  string client_interaction_uuid = 2;
+}
+
+message ProductImprovements {
+  // A flag to allow the driver to opt-out from using his or her data for further data model improvements.
+  // Default value if not specified is 'true'.
+  google.protobuf.BoolValue model_improvements = 1;
+}
+
+message UserDataResource {
+  // The version of the previously uploaded user data resource.
+  int32 expected_version = 1;
+
+  // The concept identifying the uploaded user data resource.
+  cerence.cloudservices.api.common.v1.Concept concept = 2;
+}
+
+message InlineGrammarResource {
+  // (Optional) The concept identifying the inline grammar resource, mainly used for debugging purpose. If present, the type of this concept should match the message in transient_data.
+  cerence.cloudservices.api.common.v1.Concept concept = 1;
+
+  // Transient data to use with the request.
+  oneof transient_data {
+    cerence.cloudservices.api.services.user_data.v1.CustomWords custom_words = 2;
+  }
+}
+
+
+// The message returned to the client by 'StreamingAsrQuery'
+// A series of one or more 'StreamingAsrQueryResponse' messages are streamed back to the client
+message StreamingAsrQueryResponse {
+  AsrResponse response = 1;
+}
+
+// The message returned to the client when the recognition result is streamed
+message AsrResponse {
+  // If set, returns a [google.rpc.Status][google.rpc.Status] message that
+  // specifies the status of the current response.
+  // It returns the status per response while the streaming of results continues.
+  // This is especially useful for word streaming or utterance detection use cases where it facilitates
+  // returning the status per response while the streaming of results continues.
+
+  // google.rpc.Status messages that can be returned:
+  // | Code | Message           | Description
+  // ----------------------------------------------------------------------------------------
+  // | 3    | Invalid Argument  | Invalid request from client.
+  // | 7    | PermissionDenied  | Request with invalid subscription.
+  // | 10   | Aborted           | No ASR recognition match (ASR and NLU requests only).
+  // | 13   | Internal          | Error from server or downstream services.
+  google.rpc.Status status = 1;
+
+  // The ASR result, which is either a QueryStarted, an intermediate result, the final result or the Metadata object.
+  oneof asr_result {
+    cerence.cloudservices.api.common.v1.QueryStarted query_started = 5;
+
+    // Intermediate result for the speech recognition.
+    IntermediateResult intermediate_result = 2;
+
+    // Final result for the speech recognition
+    FinalResult final_result = 3;
+
+    // The metadata information will always be returned last (even for error scenarios).
+    Metadata metadata = 4;
+  }
+}
+
+// The final result for speech recognition
+message FinalResult {
+  AsrResult result = 1;
+}
+
+// The intermediate result for speech recognition.
+message IntermediateResult {
+  AsrResult result = 1;
+}
+
+// The metadata information
+message Metadata {
+  repeated RecognitionResourceMetaInformation resource_meta_infos = 1;
+
+  VersionInformation version_info = 2;
+
+  DiagnosticInformation diagnostic_info = 3;
+}
+
+// The version information
+message VersionInformation {
+  // The version stamp of Cerence Cloud
+  string cerence_cloud_version = 1;
+}

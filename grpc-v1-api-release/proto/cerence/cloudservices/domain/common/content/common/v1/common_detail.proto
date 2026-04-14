@@ -1,0 +1,377 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.common.v1;
+
+
+import "google/type/latlng.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/common/v1";
+option java_multiple_files = true;
+option java_outer_classname = "CommonDetailProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.common.v1";
+
+enum UOM {
+  // No value has been specified.
+  UOM_UNSPECIFIED = 0;
+  // Used for return value only. Represents value unknown in this
+  // version.
+  UOM_RESERVED_UNKNOWN = 1;
+  UOM_FEET = 2;
+  UOM_INCHES = 3;
+  UOM_MILES = 4;
+  UOM_MILLIMETER = 5;
+  UOM_CENTIMETER = 6;
+  UOM_METER = 7;
+  UOM_KILOMETER = 8;
+  UOM_KILOMETERS_PER_HOUR = 9;
+  UOM_KNOTS = 10;
+  UOM_MILES_PER_HOUR = 11;
+  UOM_METERS_PER_SECOND = 12;
+  UOM_HECTOPASCALS = 13;
+  UOM_INCHES_OF_MERCURY = 14;
+  UOM_KILOPASCALS = 15;
+  UOM_MILLIBARS = 16;
+  UOM_MILLIMETERS_OF_MERCURY = 17;
+  UOM_POUNDS_PER_SQUARE_INCH = 18;
+  UOM_CELSIUS = 19;
+  UOM_FAHRENHEIT = 20;
+  UOM_KELVIN = 21;
+  UOM_PERCENT = 22;
+  UOM_FLOAT = 23;
+  UOM_INTEGER = 24;
+  UOM_BEAUFORT_WIND_SCALE = 25;
+}
+
+message Measurement {
+  // The value of the measurement.
+  string value = 1;
+
+  // The type associated with the value.
+  UOM type = 2;
+
+  // The unit associated with the value. (Localized)
+  string unit = 3;
+}
+
+message Currency {
+  // The symbol for the currency.
+  string symbol = 1;
+
+  // The code for the currency.
+  string code = 2;
+
+  // The name of the currency.
+  string name = 3;
+}
+
+enum DayOfWeek {
+  DAY_OF_WEEK_UNSPECIFIED = 0;
+  DAY_OF_WEEK_MONDAY = 1;
+  DAY_OF_WEEK_TUESDAY = 2;
+  DAY_OF_WEEK_WEDNESDAY = 3;
+  DAY_OF_WEEK_THURSDAY = 4;
+  DAY_OF_WEEK_FRIDAY = 5;
+  DAY_OF_WEEK_SATURDAY = 6;
+  DAY_OF_WEEK_SUNDAY = 7;
+}
+
+message Period {
+  // The start time for this set of hours for this day.
+  // The format is:
+  // HH:mm (00:00 - 23:59)
+  string start = 1;
+
+  // The end time for this set of hours for this day.
+  // The format is:
+  // HH:mm (00:00 - 23:59)
+  string end = 2;
+
+  // Arrive before this time to receive this rate.
+  // The format is:
+  // HH:mm (00:00 - 23:59)
+  string arrive_before = 3;
+
+  // Arrive after this time to receive this rate.
+  // The format is:
+  // HH:mm (00:00 - 23:59)
+  string arrive_after = 4;
+
+  // Depart before this time to receive this rate.
+  // The format is:
+  // HH:mm (00:00 - 23:59)
+  string depart_before = 5;
+
+  // Depart after this time to receive this rate.
+  // The format is:
+  // HH:mm (00:00 - 23:59)
+  string depart_after = 6;
+}
+
+message Payments {
+  // A mode of payment accepted at this place.
+  // Examples of possible values are as follows:
+  //   CASH
+  //   CREDIT_CARD
+  //   DEBIT_CARD
+  string mode = 1;
+
+  // A list of the types of payments accepted that are associated with this mode of payment.
+  // Possible values include the following:
+  // VISA
+  // MASTERCARD
+  // AMERICAN_EXPRESS
+  // DISCOVER
+  // CASH_CARD
+  // DEBIT_CARD
+  // OTHERS
+  repeated string type = 2;
+}
+
+message Distance {
+  // The value of the distance measurement.
+  string value = 1;
+
+  // The type associated with the value.
+  UOM type = 2;
+
+  // The unit associated with the value
+  string unit = 3;
+
+  Center center = 4;
+}
+
+// The description of the center used to calculate this distance.
+// Possible values are as follows:
+enum Center {
+  // No value has been specified.
+  CENTER_UNSPECIFIED = 0;
+  // Used for return value only. Represents value unknown in this
+  // version.
+  CENTER_RESERVED_UNKNOWN = 1;
+  CENTER_AT = 2;
+  CENTER_ANCHOR = 3;
+  CENTER_ROUTE = 4;
+}
+
+message Location {
+  // 	A set of elements that describe the geography of a location.
+  google.type.LatLng geo_position = 1;
+
+  // 	The address for the location.
+  Address address = 2;
+
+  // 	An element that contains one or more value/language pairs related to the location name.
+  repeated Pronunciation name_pronunciation = 3;
+}
+
+message Pronunciation {
+  string value = 1;
+
+  string language = 2;
+
+  // Source of the Pronunciation (Tracs, 3pp)
+  string source = 3;
+}
+
+message Address {
+  // The house number.
+  string house_number = 1;
+
+  // The street name.
+  string street = 2;
+
+  // The city.
+  string city = 3;
+
+  // The district. Subdivision of a city.
+  string district = 4;
+
+  // The county code.
+  string county_code = 5;
+
+  // The state code.
+  string state_code = 6;
+
+  // The postal code. Format varies by country.
+  string postal_code = 7;
+
+  // An ISO 3166 country code as defined by http://www.iso.org/iso/country_codes/iso_3166_code_lists/country_names_and_code_elements.htm.
+  string country_code = 8;
+
+  // The name of the nearest cross street.
+  string cross_street_first = 9;
+
+  // The name of the nearest cross street intersection.
+  string cross_street_second = 10;
+
+  // Full text listing of the address.
+  string address_label = 11;
+
+  // The localized country name.
+  string country = 12;
+
+  // The localized state name. For a US location, this is the two-digit abbreviation.
+  string state = 13;
+
+  // The localized county name.
+  string county = 14;
+
+  // 	An element that contains one or more value/language pairs related to the street address.
+  Pronunciation street_pronunciation = 15;
+
+  // An element that contains one or more value/language pairs related to the district name.
+  Pronunciation district_pronunciation = 16;
+
+  // An element that contains one or more value/language pairs related to the city name.
+  Pronunciation city_pronunciation = 17;
+
+  // An element that contains one or more value/language pairs related to the county name.
+  Pronunciation county_pronunciation = 18;
+
+  // An element that contains one or more value/language pairs related to the state name.
+  Pronunciation state_pronunciation = 19;
+
+  // An element that contains one or more value/language pairs related to the country name.
+  Pronunciation country_pronunciation = 20;
+}
+
+message AccessPoint {
+  // The type of access point. For example, this value could be "road".
+  string type = 1;
+
+  // A set of elements that describe the geography of a the access point.
+  google.type.LatLng geo_position = 2;
+}
+
+message OperatingHours {
+  // A text summary of the operating hours.
+  string summary = 1;
+
+  // Container for one or more dailyOperatingHour elements.
+  repeated DailyOperatingHour  hours = 2;
+
+  //  Indicates whether the place is open at the time of the response.
+  bool open_now = 3;
+}
+
+message DailyOperatingHour {
+  // The day associated with this value of operating hours. More than one of these elements can be included.
+  repeated DayOfWeek days = 1;
+
+  // Container for one or more period elements.
+  repeated Period periods = 2;
+}
+
+// The type of contact. Possible values are as follows:
+enum ContactType {
+  // No value has been specified.
+  CONTACT_TYPE_UNSPECIFIED = 0;
+
+  // Used for return value only. Represents value unknown in this version.
+  CONTACT_TYPE_RESERVED_UNKNOWN = 1;
+
+  CONTACT_TYPE_PHONE = 2;
+  CONTACT_TYPE_URL = 3;
+  CONTACT_TYPE_FAX = 4;
+}
+
+message Contact {
+  ContactType type = 1;
+
+  // Details from the contact. For example, this value could be "phone #", "mobile phone", or "home phone". Free-form text; values are not constrained.
+  string label = 2;
+
+  // The value.
+  string value = 3;
+}
+
+message Category {
+  // The full category name, suitable to be displayed in the user interface. Localized to the language specified in the Accept-Language header.
+  string name = 1;
+
+  // NLU category canonicals.
+  repeated string canonical = 2;
+}
+
+message Attribution {
+  // The identification code of the provider that is the source of this response data.
+  string id = 1;
+
+  // The name of the provider. This value is localized.
+  string text = 2;
+
+  // URL to the logo of the provider.
+  string url = 3;
+}
+
+message SearchCenter {
+  // The center coordinates of the search area.
+  google.type.LatLng geo_position = 1;
+
+  // The address of the center of the search area.
+  Address address = 2;
+
+  // The bounding box of the search area.
+  BoundingBox bounding_box = 3;
+
+  // The resource to report the search operation.
+  Tracking tracking = 4;
+}
+
+message Tracking {
+  // URL to report the user selection.
+  string url = 1;
+}
+
+message BoundingBox {
+  // The east longitude of the search area in degrees.
+  // It must be in the range [-180.0, +180.0]
+  double east = 1;
+
+  // The west longitude of the search area in degrees.
+  // It must be in the range [-180.0, +180.0]
+  double west = 2;
+
+  // The north latitude of the search area in degrees.
+  // It must be in the range [-90.0, +90.0]
+  double north = 3;
+
+  // The south latitude of the search area in degrees.
+  //  It must be in the range [-90.0, +90.0]
+  double south = 4;
+}
+
+message Rating {
+  // The number of ratings.
+  uint32 count = 1;
+
+  // The average rating, normalized to 0-5 scale
+  double average = 2;
+}
+
+enum BusinessStatus {
+  BUSINESS_STATUS_UNSPECIFIED = 0;
+  BUSINESS_STATUS_OPERATIONAL = 1;
+  BUSINESS_STATUS_CLOSED_TEMPORARILY = 2;
+  BUSINESS_STATUS_CLOSED_PERMANENTLY = 3;
+}

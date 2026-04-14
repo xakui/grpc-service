@@ -1,0 +1,48 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.common.v1;
+
+option go_package = "cerence/cloudservices/api/common/v1";
+option java_multiple_files = true;
+option java_outer_classname = "VoiceActivationModeProto";
+option java_package = "com.cerence.cloudservices.api.common.v1";
+
+enum VoiceActivationMode {
+  VOICE_ACTIVATION_MODE_UNSPECIFIED = 0;
+  VOICE_ACTIVATION_MODE_PUSH_TO_TALK = 1;
+  VOICE_ACTIVATION_MODE_WAKE_WORD = 2;
+  VOICE_ACTIVATION_MODE_JUST_TALK = 3;
+  VOICE_ACTIVATION_MODE_SILENT_DIALOG_CONTINUATION = 4;
+  VOICE_ACTIVATION_MODE_NAVIGATION_PICKLIST = 5;
+  VOICE_ACTIVATION_MODE_MEDIA_PICKLIST = 6;
+  VOICE_ACTIVATION_MODE_VEHICLE_PICKLIST = 7;
+  VOICE_ACTIVATION_MODE_PHONE_PICKLIST = 8;
+  VOICE_ACTIVATION_MODE_MESSAGE_PICKLIST = 9;
+  VOICE_ACTIVATION_MODE_CALENDAR_PICKLIST = 10;
+  VOICE_ACTIVATION_MODE_REMINDER_PICKLIST = 11;
+  VOICE_ACTIVATION_MODE_SOCIAL_MEDIA_PICKLIST = 12;
+  VOICE_ACTIVATION_MODE_GENERIC_PICKLIST = 13;
+  VOICE_ACTIVATION_MODE_VOCATIVE = 14;
+  VOICE_ACTIVATION_MODE_CLIENT_SUB_DIALOG = 15;      // In sub dialog but doesn't have picklist. Triggered by nlu intent and some dialog logic.
+  VOICE_ACTIVATION_MODE_CLOUD_ACTIVE_DIALOG = 16;    // In case the previous turn the Cloud has_active_task==true, will waiting Cloud response in next turn.
+}

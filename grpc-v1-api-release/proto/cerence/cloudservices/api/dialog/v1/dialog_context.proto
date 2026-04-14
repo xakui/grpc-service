@@ -1,0 +1,72 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.dialog.v1;
+
+
+import "google/protobuf/struct.proto";
+
+option go_package = "cerence/cloudservices/api/dialog/v1";
+option java_multiple_files = true;
+option java_outer_classname = "DialogContextProto";
+option java_package = "com.cerence.cloudservices.api.dialog.v1";
+
+// Context variables for cloud managed dialog
+message DialogContext {
+  // Variables in the session scope are preserved across transactions.
+  map<string, google.protobuf.Value> session = 1;
+
+  // Variables in the transaction scope are only kept for the current transaction.
+  map<string, google.protobuf.Value> transaction = 2;
+}
+
+// Context describing the state of a client managed dialog to influence the cloud results
+message ClientDialogContext {
+  // different types of content, only a single "active" content set is considered contextual
+  oneof client_dialog_context_type {
+    PlaceSelectionState place_selection_state = 1;
+    SelfServiceState self_service_state = 2;
+  }
+}
+
+// The state of the client dialog for UDE POI picklist management
+message PlaceSelectionState {
+  // Identifies if the client is in an active UDE POI picklist dialog.
+  // If true, the cloud will interpret some queries as a progressive search
+  // rather than a self-contained new query. For example, the previous utterance is 
+  // "Find restaurants in Munich" and the new utterance is "Find me French restaurants".
+  // If the flag is true, the cloud will search for French restaurants in Munich.
+  // If the flag is false, the cloud will search for French restaurants based on
+  // current location or route information provided in the navigation context.
+  bool is_active = 1;
+}
+
+// The state of a client managed dialog associated with the cloud self-service Studio NLU.
+message SelfServiceState {
+  // Indicates if the client managed self-service dialog is in a sub-dialog state.
+  // When false (default), then there is the normal cloud handling.
+  // When true, an NLUOnly response is returned by the cloud to allow the client
+  // to take the responsibility. There is no handling by a cloud domain. Note that
+  // this does not force the top NLU interpretation to be the interpretation from
+  // the self-service NLU model.
+  bool is_in_sub_dialog = 1;
+}

@@ -1,0 +1,49 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.dialog.v1;
+
+
+import "google/protobuf/struct.proto";
+
+option go_package = "cerence/cloudservices/api/dialog/v1";
+option java_multiple_files = true;
+option java_outer_classname = "DialogCandidateProto";
+option java_package = "com.cerence.cloudservices.api.dialog.v1";
+
+message Candidate {
+  // Indicates what type of match the given value provides.
+  // Optional, if not provided, assumed to be FULL.
+  enum Match {
+    MATCH_UNSPECIFIED = 0;
+    MATCH_FULL = 1;
+    MATCH_PARTIAL = 2;
+    MATCH_FUZZY = 3;
+  }
+
+  Match match = 1;
+
+  // Provides a list of the criteria that where relaxed to produce the results.
+  repeated string relaxations = 2;
+
+  google.protobuf.Value value = 3;
+}

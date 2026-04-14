@@ -1,0 +1,202 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.ude.v1;
+
+import "cerence/cloudservices/domain/common/content/common/v1/common_detail.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/ude/v1";
+option java_multiple_files = true;
+option java_outer_classname = "EVChargingDetailProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.ude.v1";
+
+message EVChargingDetail {
+  // Container for the details about connectors. Zero or more connector elements are returned.
+  repeated Connector connectors = 1;
+}
+
+message Connector {
+  // The type of connector.
+
+  string connector_name = 1;
+  // The name of the supplier.
+
+  string supplier_name = 2;
+  // The supplier's contact list. Zero of more contact elements may be included.
+
+  repeated cerence.cloudservices.domain.common.content.common.v1.Contact supplier_contacts = 3;
+  // 	Container for detailed information about one charging point.
+  ChargingPoint charging_point = 4;
+
+  // Container for details about the connector type.
+  ConnectorType connector_type = 5;
+
+  // Container for details about the type of power feed for the connector.
+  PowerFeedType power_feed_type = 6;
+
+  // A list of available charge capacity values for the connector.
+  // Following are example values:
+  // Other
+  // 100-120VAC, 1-phase at max 6A
+  // 100-120VAC, 1-phase at max 10A
+  // 380-480VAC, 3-phase at max 63A
+  // 500VDC, at max 50A
+  // 500VDC, at max 110A
+  // 240VDC, at max 60A
+  // 240VDC, at max 30A
+  repeated string charging_capacity = 7;
+
+  // The maximum charge power of the connector in kilowatts.
+  double max_power_level = 8;
+
+  // The maximum power level index for the connector.
+  uint32 max_power_level_index = 9;
+
+  // A boolean that indicates if a cable is provided for the connector. If this value is "true", there is a cable for the connector at the station.
+  bool fixed_cable = 10;
+
+  // The name of the device where the connector is located.
+  string device_name = 11;
+
+  // A boolean that indicates if the connector can be reserved. If this value is "true", the connector can be reserved.
+  bool reserveable = 12;
+
+  // Useful information for making a reservation, such as a URL or phone number.
+  string reservation_information = 13;
+
+  // A boolean that indicates if this connector is only available for private use. If this value is "true", the device is not available to the general public.
+  bool private_access = 14;
+
+  // Information about who is allowed to use the connector.
+  string private_access_information = 15;
+
+  // Available payment methods.
+  string payment_method_details = 16;
+
+  // The manufacturer of the charging connector.
+  string manufacturer = 17;
+
+  // The name of the charging connector provided by the manufacturer.
+  string manufacturer_model = 19;
+
+  // DEPRECATED
+  ChargingPrice charging_price = 20 [deprecated = true];
+
+  // Container for the pricing methods available for the connector.
+  repeated ChargingPrice charging_prices = 22;
+
+  // Container for the details of the operating days and hours for this place.
+  cerence.cloudservices.domain.common.content.common.v1.OperatingHours operating_hours = 21;
+}
+
+
+message ChargingPoint {
+  // Charging mode of the connector.
+  // Following are examples of this value:
+  //   Unspecified – no information provided
+  //   Mode 1 – slow charging from a regular electrical socket (1 or 3 phase)
+  //   Mode 2 – slow charging from a regular socket equipped with some EV specific protection arrangement
+  string charge_mode = 1;
+
+  // 	Voltage of the charge provided by the charge point, in volts.
+  uint32 volts = 2;
+
+  // Voltage range of the charge provided by the charge point, in volts. Values are alphanumeric represented by the volt value followed by a "V" and by the current type "AC" or "DC". For example, this value could be "100-120V AC" or "600V DC".
+  string volts_range = 3;
+
+  // The number of phases used by the charge point.
+  uint32 phases = 4;
+
+  // The maximum current provided by the charge point, in amperes.
+  uint32 amps = 5;
+
+  // The current range provided by the charge point, in amperes. The values are alphanumeric represented by the ampere value followed by an "A". For example, this value could be "16A", "12A-80A" or "200A".
+  string amps_range = 6;
+
+  // 	The number of physical connectors at the charge point.
+  uint32 number_of_connectors = 7;
+
+  // The number of physical connectors that are available at the charge point. If a connector is being used to charge a vehicle or is out of service or unavailable for any other reason, it is not included in this number.
+  uint32 number_of_available = 8;
+
+  // The number of physical connectors that are in use at the charge point.
+  uint32  number_of_in_use = 9;
+
+  // The number of physical connectors that are out of service at the charge point.
+  uint32 number_of_out_of_service = 10;
+
+  // 	The number of physical connectors that are reserved at the charge point.
+  uint32 number_of_reserved = 11;
+}
+
+message ConnectorType {
+  // The third party provider's connector type id.
+  string id = 1;
+
+  // The third party provider's connector type name.
+  string name = 2;
+
+  // 	Cerence Cloud Services (CCS) consolidated connector canonical.
+  string canonical_string = 3;
+}
+
+message PowerFeedType {
+  // The third party provider's power feed type id.
+  string id = 1;
+
+  // The third party provider's power feed type name.
+  string name = 2;
+}
+
+message ChargingPrice {
+  // Pricing model applicable for the charging connector.
+
+  // Following are examples of available models:
+
+  // kWh – Pricing is based on the number of kilo Watt hours
+  // Session – Pricing is session based
+  // TimeUnit – Pricing is based on how long the charging takes
+  // ParkAndCharge – Pricing is bundled with parking. The customer is allowed to charge while parking.
+  // TransactionFee – Pricing is based on a transaction fee
+  // Subscription – Pricing is based on subscription
+  string pricing_model = 1;
+
+  // The accepted currency code. For example, this value could be "USD" or "RMB".
+  string currency = 2;
+
+  // The amount of the currency.
+  uint32 amount = 3;
+
+  // The hours in which the price applies.
+  TimePeriod time_period = 4;
+
+  // Description of the pricing structure.
+  string description = 5;
+}
+
+message TimePeriod {
+  // 	The time that the price period starts, local to the connector, in hh:mm:ss format.
+  string from = 1;
+
+  // 	The time that the price period ends, local to the connector, in hh:mm:ss format.
+  string to = 2;
+}

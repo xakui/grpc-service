@@ -1,0 +1,264 @@
+// Copyright © 2023 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.services.domain.v1;
+
+import "cerence/cloudservices/api/common/v1/context_source.proto";
+import "cerence/cloudservices/api/common/v1/datetime_with_offset.proto";
+import "cerence/cloudservices/api/common/v1/provider.proto";
+import "cerence/cloudservices/api/common/v1/route_info.proto";
+import "cerence/cloudservices/api/common/v1/context_media_details.proto";
+import "cerence/cloudservices/api/common/v1/waypoint_blacklist_item.proto";
+
+import "google/api/field_behavior.proto";
+import "google/protobuf/wrappers.proto";
+import "google/type/latlng.proto";
+import "google/protobuf/any.proto";
+
+option go_package = "cerence/cloudservices/api/services/domain/v1";
+option java_multiple_files = true;
+option java_outer_classname = "DomainContextProto";
+option java_package = "com.cerence.cloudservices.api.services.domain.v1";
+
+// This message describes the context information that can be passed in Domain requests.
+message Context {
+  // The current local date and time with the UTC offset
+  cerence.cloudservices.api.common.v1.DateTimeWithOffset date_time_with_offset = 1;
+
+  // Source of the date information
+  cerence.cloudservices.api.common.v1.DateTimeSource date_time_source = 2;
+
+  google.protobuf.BoolValue daylight_saving_time_active = 3;
+
+  NavigationContext navigation_context = 4;
+
+  VehicleStaticContext vehicle_static_context = 5;
+
+  VehicleDynamicContext vehicle_dynamic_context = 6;
+
+  EnvironmentContext environment_context = 7;
+
+  CabinContext cabin_context = 8;
+
+  MediaContext media_context = 9;
+
+  DriverContext driver_context = 10;
+
+  UIContext ui_context = 11;
+
+  // Optional, now only applicable for xUI Gen 1, used for passing any OEM specific vehicle context parameters, which are not defined in Cerence predefined contexts
+  repeated OEMCustomContext oem_custom_contexts = 12;
+}
+
+// The context describing the navigation data.
+message NavigationContext {
+  // The current location of the vehicle
+  google.type.LatLng current_location = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The method by which the current location was determined
+  cerence.cloudservices.api.common.v1.LocationSource current_location_source = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The destination of the vehicle
+  google.type.LatLng destination_location = 3;
+
+  // The origin of the current navigation guidance session
+  google.type.LatLng origin_location = 4;
+
+  // Route information.  Indicates the route from the current location to the destination,
+  // variable representations.
+  cerence.cloudservices.api.common.v1.RouteInfo route_info = 5;
+
+  // Heading in positive degrees relative to true north, counted clockwise. (e.g. 270 degrees is westward).
+  google.protobuf.FloatValue heading = 6;
+
+  // Additional contextual location other than current and destination locations.
+  google.type.LatLng target_location = 7;
+
+    // Indicates the absolute current speed in km/hr.
+  google.protobuf.DoubleValue current_speed_km_hr = 8;
+
+  // Average speed in the last 15 minutes in km/hr.
+  google.protobuf.DoubleValue average_speed_15_min_km_hr = 9;
+
+  // This is the blacklist of waypoints, either provided by the client or derived from user preferences.
+  // When searching the route, the items in this list should be excluded.
+  repeated cerence.cloudservices.api.common.v1.WaypointBlacklistItem waypoint_blacklist_items = 10;
+
+}
+
+// The context describing the user characteristics.
+message DriverContext {
+  // The location of the driver's home
+  google.type.LatLng home_location = 1;
+
+  // The location of the driver's work
+  google.type.LatLng work_location = 2;
+}
+
+// The context describing the user interface.
+message UIContext {
+  // How the user prefers to see/hear time.
+  cerence.cloudservices.api.common.v1.TimeExpression time_expression = 1;
+
+  // How the user prefers to see/hear distances and speeds.
+  cerence.cloudservices.api.common.v1.DistanceExpression distance_expression = 2;
+
+  // How the user prefers to see/hear temperature readings.
+  cerence.cloudservices.api.common.v1.TemperatureExpression temperature_expression = 3;
+
+  // How the user prefers to see/hear volumes.
+  cerence.cloudservices.api.common.v1.VolumeExpression volume_expression = 4;
+
+  // Set to true if the user marks the promotion as "not listed" for places; defaults to false.
+  google.protobuf.BoolValue promotion_deactivated = 5;
+
+  // Set to true if the user marks the places with promotion to be listed on top of picklist, otherwise false. Defaults to true.
+  google.protobuf.BoolValue promotion_at_top = 6;
+}
+
+message VehicleStaticContext {
+  // Commercial model name of the vehicle
+  google.protobuf.StringValue vehicle_model = 1;
+
+  // OEM model code of the vehicle
+  google.protobuf.StringValue vehicle_model_code = 2;
+
+  // Indicates a list of acceptable fuel types for the primary engine of the car.
+  cerence.cloudservices.api.common.v1.EvType ev_type = 3;
+
+  // Indicates a list of acceptable fuel types for the primary engine of the car.
+  repeated cerence.cloudservices.api.common.v1.FuelType fuel_type = 4;
+
+  // Indicates a list of acceptable fuel types for the primary engine of the car.
+  repeated cerence.cloudservices.api.common.v1.EvInletType ev_inlet_types = 5;
+
+  // Commercial brand name of the vehicle 
+  google.protobuf.StringValue vehicle_brand = 6;
+}
+
+// The context describing the media that the car is playing at the moment the request is sent to OneCloud
+message MediaContext {
+  // Id for the media that is being currently played (if any)
+  string current_media_id = 1;
+
+  // Second at which the media is being played (if any)
+  float current_second = 2;
+
+  // Current provider being used to provide content.
+  MediaProvider current_provider = 3;
+
+  // Provider specific information
+  MediaProviderContext provider_context = 4;
+
+  // Details of currently playing media
+  cerence.cloudservices.api.common.v1.MediaDetails details_of_currently_playing_media = 5;
+}
+
+
+message MediaProvider {
+  cerence.cloudservices.api.common.v1.MediaProviderEnum name= 1;
+}
+
+
+message MediaProviderContext {
+  // Spotify specific context
+  SpotifyContext spotify_context = 1;
+
+  // Amazon specific context
+  AmazonContext amazon_context = 2;
+
+  // Apple specific context
+  AppleContext apple_context = 3;
+}
+
+message SpotifyContext {
+  // User Authentication token that will be used to retrieve data from Spotify
+  string  auth_token = 1;
+}
+
+message AmazonContext {
+  // Authentication token for Amazon in case it's present in the head unit. It's required if media context will be returned from Amazon
+  string auth_token = 1;
+  // Specifies if the user's settings allow for media returned to have explicit content
+  bool has_explicit = 2;
+}
+
+message AppleContext {
+  // Apple developer token required in order to retrieve data from apple music api
+  string dev_token = 1;
+
+  // If user was authenticated, the user token can be provided so the results from apple api are customized for this user
+  string user_token = 2;
+}
+
+message VehicleDynamicContext {
+
+  // The height (required clearance) of the vehicle in centimeters
+  google.protobuf.DoubleValue height_cm = 1;
+
+  // The total remaining range autonomy of the vehicle in km, from all power sources (fuel and/or battery).
+  google.protobuf.DoubleValue range_km = 2;
+
+  // Fill level of the windshield cleaning fluid
+  google.protobuf.UInt32Value windshield_wipers_fluid_level = 3;
+
+  // Whether the windshield wipers are operating, either due to a manual setting or automatically due to rain being
+  // detected. Intermittent wiping is considered active.
+  google.protobuf.BoolValue windshield_wipers_active = 4;
+
+  // Fill level of the Diesel exhaust fluid (i.e. adBlue) (units=percentage)
+  google.protobuf.DoubleValue diesel_exhaust_fluid_level_percentage = 5;
+
+}
+
+message EnvironmentContext  {
+  // The temperature outside the vehicle (Celsius).
+  google.protobuf.DoubleValue outside_temperature_celsius = 1;
+
+  // Indicates if the rain detector detects precipitation.
+  google.protobuf.BoolValue rain_detected = 2;
+
+  // Indicates that the current ground temperature can lead to ice formation, or actual ice has been detected.
+  google.protobuf.BoolValue frost_detected = 3;
+
+  // The combined air quality index (EPA scale, 0 to 500) outside the car. Indicates the current combined air quality
+  // index using the readings from all available sensors (e.g. NOx, fine particles).
+  google.protobuf.DoubleValue outside_aqi = 4;
+}
+
+message CabinContext {
+  // Indicates that at least one cabin window is not completely closed
+  google.protobuf.BoolValue window_open = 5;
+
+  // The number of passengers in the vehicle, including the driver.
+  google.protobuf.UInt32Value passenger_count = 13;
+}
+
+message OEMCustomContext {
+  // The unique identifier for the OEM-specific context
+  // The cloud has the configuration needed to control the whitelisting of the context for an agent
+  string context_identifier = 1;
+
+  // The OEM custom context content. The data structure shall be agreed upon between the client and the consuming agent
+  // The versioning info shall be included in this context.
+  google.protobuf.Any context = 2;
+}

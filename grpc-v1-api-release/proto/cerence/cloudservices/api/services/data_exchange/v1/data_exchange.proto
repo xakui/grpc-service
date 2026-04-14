@@ -1,0 +1,144 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.services.data_exchange.v1;
+
+import "cerence/cloudservices/api/common/v1/interaction_history.proto";
+import "cerence/cloudservices/api/common/v1/interpretation.proto";
+import "cerence/cloudservices/api/dialog/v1/dialog_context.proto";
+import "cerence/cloudservices/api/dialog/v1/dialog_query.proto";
+import "cerence/cloudservices/api/common/v1/personal_assistant_request.proto";
+import "cerence/cloudservices/api/services/data_exchange/v1/diagnostic.proto";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/wrappers.proto";
+import "google/rpc/status.proto";
+
+option go_package = "cerence/cloudservices/api/services/data_exchange/v1";
+option java_multiple_files = true;
+option java_outer_classname = "DataExchangeApiProto";
+option java_package = "com.cerence.cloudservices.api.services.data_exchange.v1";
+
+// Service that implements the Cerence API for Data Exchange requests
+service DataExchangeService {
+
+  // Performs a Data Exchange request.
+  rpc DataExchange (DataExchangeRequest) returns (stream DataExchangeResponse);
+}
+
+message DataExchangeRequest {
+  // A string that uniquely identifies the user making the request. The value must not be empty and must have a
+  // maximum size of 64 characters.
+  string user_id = 1;
+
+  // The serialized session state from the previous response.
+  // The session data is common across all services.
+  bytes session_data = 2;
+
+  // Response Version
+  string response_version = 3;
+
+  // Dialog data
+  Dialog dialog = 4;
+
+  // The logging information that can be passed in the request.
+  Logging logging = 5;
+
+  // Personal assistant request data
+  cerence.cloudservices.api.common.v1.PersonalAssistantRequest personal_assistant_request = 6;
+
+  // Product Improvements
+  ProductImprovements product_improvements = 7;
+
+  // The device id allows to differentiate between devices. The value must not be empty and must have a maximum size of 64 characters.
+  string device_id = 8;
+}
+
+message Dialog {
+  // Object that contains session scoped variables and transaction scoped variables that can
+  // be exchanged between client and dialog engine
+  cerence.cloudservices.api.dialog.v1.DialogContext context = 1;
+
+  // Used to manage dialog state that may impact both the cloud and client side.
+  cerence.cloudservices.api.dialog.v1.ClientDialogContext client_dialog_context = 3;
+
+  cerence.cloudservices.api.dialog.v1.DialogQueryAnswer query_answer = 2;
+}
+
+message Logging {
+  // Client dialog id. Provide the same value for all requests made within a dialog. Must be a globally unique id.
+  string client_dialog_id = 1;
+
+  // Identifies an interaction within a dialog. Must be a valid uuid.
+  string client_interaction_uuid = 2;
+}
+
+message ProductImprovements {
+  // A flag to allow the driver to opt-out from using his or her data for further data model improvements.
+  // Default value if not specified is 'true'.
+  google.protobuf.BoolValue model_improvements = 1;
+}
+
+// The Data Exchange results
+message DataExchangeResponse {
+  // If set, returns a [google.rpc.Status][google.rpc.Status] message that
+  // specifies the status of the current response.
+
+  // google.rpc.Status messages that can be returned:
+  // | Code | Message           | Description
+  // ----------------------------------------------------------------------------------------
+  // | 3    | Invalid Argument  | Invalid request from client.
+  // | 7    | PermissionDenied  | Request with invalid subscription.
+  // | 13   | Internal          | Error from server or downstream services.
+  google.rpc.Status status = 3;
+
+  oneof data_exchange_result {
+    DomainResult domain_result = 1;
+
+    // The metadata information will always be returned last (even for error scenarios).
+    Metadata metadata = 2;
+  }
+}
+
+message DomainResult {
+  // One of the domain results defined in /proto/cerence/cloudservices/domain/results/*.proto
+  google.protobuf.Any result = 1;
+
+  cerence.cloudservices.api.common.v1.Interpretations interpretations = 2;
+
+  repeated cerence.cloudservices.api.common.v1.InteractionHistory interaction_history = 3;
+
+  bytes session_data = 4;
+}
+
+// The metadata information
+message Metadata {
+  VersionInformation version_info = 1;
+
+  DiagnosticInformation diagnostic_info = 2;
+}
+
+// The version information
+message VersionInformation {
+  // The version stamp of Cerence Cloud
+  string cerence_cloud_version = 1;
+}

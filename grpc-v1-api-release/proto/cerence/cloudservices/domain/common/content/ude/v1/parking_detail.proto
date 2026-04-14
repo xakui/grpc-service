@@ -1,0 +1,219 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.ude.v1;
+
+import "cerence/cloudservices/domain/common/content/common/v1/common_detail.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/ude/v1";
+option java_multiple_files = true;
+option java_outer_classname = "ParkingDetailProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.ude.v1";
+
+message ParkingDetail {
+  enum ParkingType {
+    // No value has been specified.
+    PARKING_TYPE_UNSPECIFIED = 0;
+
+    // Used for return value only. Represents value unknown in this
+    // version.
+    PARKING_TYPE_RESERVED_UNKNOWN = 1;
+
+    PARKING_TYPE_ON_STREET = 2;
+    PARKING_TYPE_PRIVATE = 3;
+    PARKING_TYPE_OFF_STREET = 4;
+  }
+
+  // The type of parking lot.
+  ParkingType type = 1;
+
+  // The surface type for the parking lot.
+  string surface_type = 2;
+
+  // Container for any restrictions for the parking location, including height and width of vehicle.
+  Restriction restriction = 3;
+
+  // The main URL for this parking location.
+  string url = 4;
+
+  // The identifying number for the time zone associated with this parking location.
+  uint32 time_zone_id = 5;
+
+  // A description of this parking location in a language local to the country where the parking location is located.
+  string description = 6;
+
+  // Describes a feature of this parking location. Zero or more of these elements can be included.
+  repeated string features = 7;
+
+  // Details about availability at this parking location.
+  Availability availability = 8;
+
+  // Details about the prices and the associated currency.
+  Pricing pricing = 9;
+
+  // Relative integer value that indicates how expensive it is to park at this parking location. A value of "1" is the lowest cost.
+  uint32 cost_level = 10;
+
+  // Container for one or more sets of payment information for this parking location.
+  repeated cerence.cloudservices.domain.common.content.common.v1.Payments payments = 11;
+
+  //Describes the geometry of this parking location.
+  Geometry geometry = 12;
+
+  // Details about the cost for parking at this location.
+  Costing costing = 13;
+
+}
+
+message Restriction {
+  // The vehicle height restriction for this parking lot.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement height = 1;
+
+  // The vehicle width restriction for this parking lot.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement width = 2;
+}
+
+message Availability {
+  // 	The total number of parking spaces currently available at this parking location.
+  uint32 total = 1;
+
+  // Container for real time information on the availability of parking at this location.
+  RealTime real_time = 2;
+
+  message RealTime {
+    // Time that this information was last updated.
+    string time_updated = 1;
+
+    // The type of availability.
+    string avail_type = 2;
+
+    // The current trend of parking at this location.
+    string trend = 3;
+  }
+}
+
+message Pricing {
+  cerence.cloudservices.domain.common.content.common.v1.Currency currency = 1;
+
+  repeated Rates rates = 2;
+
+  message Rates {
+    // The maximum time for a parking stay at this location, in minutes.
+    uint32 max_stay_in_minutes = 1;
+
+    // The amount and duration of a rate. Zero or more sets of price information may be included.
+    repeated Price prices = 2;
+
+    message Price {
+      // The rate for the price.
+      double rate = 1;
+
+      // Details about the duration for this price.
+      Duration duration = 2;
+
+      message Duration {
+        // The type of the duration
+        DurationType duration_type = 1;
+
+        enum DurationType {
+          // No value has been specified.
+          DURATION_TYPE_UNSPECIFIED = 0;
+
+          // Used for return value only. Represents value unknown in this
+          // version.
+          DURATION_TYPE_RESERVED_UNKNOWN = 1;
+
+          DURATION_TYPE_TIME_IN_MINUTES = 2;
+          DURATION_TYPE_ADDITIONAL_IN_MINUTES = 3;
+          DURATION_TYPE_ADDITIONAL_DAY = 4;
+          DURATION_TYPE_HANDICAPPED_DRIVER = 5;
+          DURATION_TYPE_FLAT = 6;
+          DURATION_TYPE_EARLY_BIRD = 7;
+          DURATION_TYPE_OVERNIGHT = 8;
+          DURATION_TYPE_DAYTIME = 9;
+          DURATION_TYPE_EVENING = 10;
+          DURATION_TYPE_TO_CLOSING_TIME = 11;
+          DURATION_TYPE_MINIMUM = 12;
+          DURATION_TYPE_MAXIMUM = 13;
+          DURATION_TYPE_OUTDOORS = 14;
+          DURATION_TYPE_INDOORS = 15;
+          DURATION_TYPE_MONTHLY_WEEKDAYS = 16;
+          DURATION_TYPE_QUARTER_WEEKDAYS = 17;
+          DURATION_TYPE_HALF_YEARLY_WEEKDAYS = 18;
+          DURATION_TYPE_YEARLY_WEEKDAYS = 19;
+          DURATION_TYPE_LARGE_VEHICLE = 20;
+          DURATION_TYPE_MOTORCYCLE = 21;
+          DURATION_TYPE_EVENT = 22;
+          DURATION_TYPE_BANK_HOLIDAY = 23;
+          DURATION_TYPE_PRE_BOOKED_DAILY = 24;
+          DURATION_TYPE_MONTHLY_UNRESERVED = 25;
+          DURATION_TYPE_MONTHLY_RESERVED = 26;
+          DURATION_TYPE_MONTHLY_SEASONAL = 27;
+          DURATION_TYPE_VALET = 28;
+          DURATION_TYPE_TWENTY_FOUR_HOURS = 29;
+          DURATION_TYPE_TWENTY_FOUR_HOURS_PEAK = 30;
+          DURATION_TYPE_TWENTY_FOUR_HOURS_OFF_PEAK = 31;
+          DURATION_TYPE_PARK_AND_RIDE = 32;
+        }
+        // The length of time for this duration type.
+        uint32 duration_value = 2;
+      }
+
+    }
+    // Details about a period of time. Zero or more of these elements may be included.
+    repeated Hour hours = 3;
+
+    message Hour {
+      repeated  cerence.cloudservices.domain.common.content.common.v1.DayOfWeek days = 1;
+
+      repeated  cerence.cloudservices.domain.common.content.common.v1.Period periods = 2;
+    }
+  }
+}
+
+message Geometry {
+  // Space-separated list of the latitude and longitude of the parking location. The format is:
+  // latitude,longitude latitude,longitude
+  string coordinates = 1;
+
+  // The type of geometry returned. Possible values include the following:
+  //  - polygon
+  //  - polyline
+  string type = 2;
+}
+
+message Costing {
+  // 	Details for the currency associated with this cost.
+  cerence.cloudservices.domain.common.content.common.v1.Currency currency = 1;
+
+  // 	The cost for one period. Zero or more of these sets of costs per period may be included.
+  repeated Cost costs = 2;
+
+  message Cost {
+    // Container for beginning and ending time for the period related to this cost.
+    cerence.cloudservices.domain.common.content.common.v1.Period period = 1;
+
+    // 	The cost amount.
+    double amount = 2;
+  }
+
+}

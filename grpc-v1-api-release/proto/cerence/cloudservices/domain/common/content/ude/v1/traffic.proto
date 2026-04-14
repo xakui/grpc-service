@@ -1,0 +1,58 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+package cerence.cloudservices.domain.common.content.ude.v1;
+
+option java_multiple_files = true;
+option java_outer_classname = "TrafficProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.ude.v1";
+option go_package = "cerence/cloudservices/domain/common/content/ude/v1";
+
+import "cerence/cloudservices/domain/common/content/ude/v1/place.proto";
+import "cerence/cloudservices/domain/common/content/common/v1/content_status.proto";
+import "cerence/cloudservices/domain/common/content/ude/v1/meta_info.proto";
+
+// An traffic element can be returned by a request to a function of the
+// Cerence content request.
+// It contains a set of elements that describe two sets of places,
+//  an origin and a destination.
+
+message Traffic {
+
+  // Status of the request.
+  // Indicate whether the content request was successfully handled.
+  cerence.cloudservices.domain.common.content.common.v1.ContentStatusInfo content_status_info = 1;
+
+  // A container for zero or more place elements. A place element contains
+  // information about one place.
+  // This is the origin of the travel.
+  // Example: "Traffic from Paris to Berlin", origin is Paris
+  repeated Place origins = 2;
+
+  // A container for zero or more place elements. A place element contains
+  // information about one place.
+  // This is the destination of the travel. 
+  // Example: "Traffic from Paris to Berlin", destination is Berlin
+  repeated Place destinations = 3;
+
+  // Meta information about the UDE content (sorting, reasoning, search constraints, etc.)
+  GlobalMetaInfo meta_info = 4;
+}

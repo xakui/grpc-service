@@ -1,0 +1,97 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.media.v1;
+
+import "cerence/cloudservices/domain/common/content/media/v1/visual_content.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/media/v1";
+option java_multiple_files = true;
+option java_outer_classname = "LanguageProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.media.v1";
+
+message Language{
+  LanguageEnum language=1;
+
+  string language_name=2;
+
+  repeated VisualContent media=3;
+}
+
+enum LanguageEnum{
+  LANGUAGE_ENUM_UNSPECIFIED=0;
+  LANGUAGE_ENUM_ARABIC = 1;
+  LANGUAGE_ENUM_ARMENIAN = 2;
+  LANGUAGE_ENUM_BULGARIAN = 3;
+  LANGUAGE_ENUM_BURMESE = 4;
+  LANGUAGE_ENUM_CANTONESE = 5;
+  LANGUAGE_ENUM_CHINESE = 6;
+  LANGUAGE_ENUM_CROATIAN = 7;
+  LANGUAGE_ENUM_CZECH = 8;
+  LANGUAGE_ENUM_DANISH = 9;
+  LANGUAGE_ENUM_DUBBED = 10;
+  LANGUAGE_ENUM_DUTCH = 11;
+  LANGUAGE_ENUM_ENGLISH = 12;
+  LANGUAGE_ENUM_FILIPINO = 13;
+  LANGUAGE_ENUM_FINNISH = 14;
+  LANGUAGE_ENUM_FRENCH = 15;
+  LANGUAGE_ENUM_GEORGIAN = 16;
+  LANGUAGE_ENUM_GERMAN = 17;
+  LANGUAGE_ENUM_GREEK = 18;
+  LANGUAGE_ENUM_HAWAIIAN = 19;
+  LANGUAGE_ENUM_HINDI = 20;
+  LANGUAGE_ENUM_HUNGARIAN = 21;
+  LANGUAGE_ENUM_INDONESIAN = 22;
+  LANGUAGE_ENUM_ITALIAN = 23;
+  LANGUAGE_ENUM_JAPANESE = 24;
+  LANGUAGE_ENUM_KOREAN = 25;
+  LANGUAGE_ENUM_LATVIAN = 26;
+  LANGUAGE_ENUM_LITHUANIAN = 27;
+  LANGUAGE_ENUM_MANDARIN = 28;
+  LANGUAGE_ENUM_MONGOLIAN = 29;
+  LANGUAGE_ENUM_MULTI_LINGUAL = 30;
+  LANGUAGE_ENUM_NORWEGIAN = 31;
+  LANGUAGE_ENUM_ORIGINAL_AUDIO = 32;
+  LANGUAGE_ENUM_POLISH = 33;
+  LANGUAGE_ENUM_PORTUGUESE = 34;
+  LANGUAGE_ENUM_ROMANIAN = 35;
+  LANGUAGE_ENUM_RUSSIAN = 36;
+  LANGUAGE_ENUM_SLOVENE = 37;
+  LANGUAGE_ENUM_SPANISH = 38;
+  LANGUAGE_ENUM_SWEDISH = 39;
+  LANGUAGE_ENUM_TAIWANESE = 40;
+  LANGUAGE_ENUM_THAI = 41;
+  LANGUAGE_ENUM_TURKISH = 42;
+  LANGUAGE_ENUM_UZBEK = 43;
+  LANGUAGE_ENUM_VIETNAMESE = 44;
+  LANGUAGE_ENUM_WESTERN = 45;
+
+  LANGUAGE_ENUM_AFRICAN_DIALECT=201;
+  LANGUAGE_ENUM_TAGALOG=202;
+  LANGUAGE_ENUM_CORSICAN=203;
+  LANGUAGE_ENUM_ALBANIAN=204;
+  LANGUAGE_ENUM_UKRAINIAN=205;
+  LANGUAGE_ENUM_PUNJABI=206;
+  LANGUAGE_ENUM_HAITIAN=207;
+  LANGUAGE_ENUM_LATIN=208;
+  LANGUAGE_ENUM_HEBREW=209;
+}

@@ -1,0 +1,86 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.ude.v1;
+
+
+import "google/protobuf/wrappers.proto";
+import "google/type/latlng.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/ude/v1";
+option java_multiple_files = true;
+option java_outer_classname = "MultimodalProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.ude.v1";
+
+// A multimodal element is a container for multimodal details about a place.
+message Multimodal {
+  Place3DWorld place_3_d_world = 1 [json_name = "place3DWorld"];
+
+  SearchInfo search_info = 2;
+}
+
+// A place3DWorld element is a container for 3D data returned from the multimodal service.
+message Place3DWorld {
+  google.type.LatLng world_center = 1;
+
+  google.protobuf.DoubleValue field_of_view_depth = 2;
+
+  repeated Place3DModel models = 3;
+}
+
+// A place3DModel element is a 3D model.
+message Place3DModel {
+  google.protobuf.StringValue id = 1;
+
+  google.protobuf.StringValue type = 2;
+
+  google.protobuf.DoubleValue confidence_score = 3;
+
+  google.protobuf.StringValue model_format = 4;
+
+  google.protobuf.StringValue model = 5;
+}
+
+// A searchInfo element contains information used for the search. It allows the client to determine if the response
+// was processed as 2D or 3D. It also returns information such as a location reference and a radius, which varies by
+// client or request type.
+message SearchInfo {
+  google.protobuf.StringValue request_type = 1;
+
+  google.protobuf.StringValue response_type = 2;
+
+  google.protobuf.StringValue coverage_type = 3;
+
+  google.protobuf.Int32Value radius = 4;
+
+  SpatialLocationSpan spatial_location_span = 5;
+}
+
+// A spatialLocationSpan element contains the angles of the spatial location span used in the request. The angles are
+// clockwise, relative to the car heading of 0. For example, if the car is headed 90 degrees to the right, the spatial
+// location span for FRONT returned to the client is 270 to 90, relative to true north. In terms of places' response
+// area, this translates to 0 to 180 bearing.
+message SpatialLocationSpan {
+  google.protobuf.Int32Value start_angle = 1;
+
+  google.protobuf.Int32Value end_angle = 2;
+}

@@ -1,0 +1,86 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.media.v1;
+
+import "cerence/cloudservices/domain/common/content/media/v1/album.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/artist.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/episode.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/song.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/show.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/channel.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/playlist.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/spotify.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/radio_station.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/media_content_type.proto";
+import "google/rpc/status.proto";
+
+
+option go_package = "cerence/cloudservices/domain/common/content/media/v1";
+option java_multiple_files = true;
+option java_outer_classname = "MediaProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.media.v1";
+
+message MediaContentResults{
+  Provider provider=1;
+  oneof content{
+      Album album=2;
+
+      Artist artist=3;
+
+      Song song=4;
+
+      Episode episode=5;
+
+      Show show=6;
+
+      //Only used by SiriusXM but for them it's very important.
+      // Since SiriusXM is not an active provider and we will never expect this content type in response for Amazon and Spotify, we are deprecating this content type
+      Channel channel=7[deprecated = true];
+
+      Playlist playlist=8;
+
+      RadioStation radio_station = 9;
+  }
+  ExpectedResultType media_entity_type = 10;
+}
+
+message Provider {
+  ProviderEnum name=1;
+}
+
+enum ProviderEnum{
+  PROVIDER_ENUM_UNSPECIFIED=0;
+  PROVIDER_ENUM_SIRIUS_XM=1;
+  PROVIDER_ENUM_STINGRAY=2;
+  PROVIDER_ENUM_SPOTIFY=3;
+  PROVIDER_ENUM_AMAZON_MUSIC=4;
+  PROVIDER_ENUM_APPLE_MUSIC=5;
+}
+
+message MediaTextSuggestions{
+  repeated TextSuggestion text_suggestions=1;
+}
+
+message TextSuggestion{
+  string suggestion=1;
+}

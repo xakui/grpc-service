@@ -1,0 +1,100 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.ude.v1;
+
+import "google/protobuf/wrappers.proto";
+
+import "cerence/cloudservices/domain/common/content/common/v1/common_detail.proto";
+import "cerence/cloudservices/domain/common/content/common/v1/content_status.proto";
+import "cerence/cloudservices/domain/common/content/ude/v1/meta_info.proto";
+import "cerence/cloudservices/domain/common/content/ude/v1/multimodal.proto";
+import "cerence/cloudservices/domain/common/content/ude/v1/place.proto";
+import "cerence/cloudservices/domain/common/content/ude/v1/provenance.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/ude/v1";
+option java_multiple_files = true;
+option java_outer_classname = "UdeProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.ude.v1";
+
+// An ude element can be returned by a request to a function of the
+// Cerence content request localsearch/v3, parking/v2 or fuel/v2 service. It
+// contains a set of elements that describe a set of places.
+message Ude {
+
+    // A container for zero or more place elements. A place element contains
+    // information about one place.
+    repeated Place places = 1;
+
+    // A container for one or more attribution elements.
+    repeated cerence.cloudservices.domain.common.content.common.v1.Attribution attributions = 2;
+
+    // A container for detailed information about the area of the search. A
+    // searchCenter element can be returned by a request to a function of the
+    // Cerence content request localsearch service.
+    cerence.cloudservices.domain.common.content.common.v1.SearchCenter search_center = 3;
+
+    // A container for zero or more provenance elements. A provenance element contains
+    // information about global rules used to filter or sort the results.
+    repeated Provenance provenance = 4 [deprecated = true];
+
+    // 	Container for the multimodal information for a place.
+    Multimodal multimodal = 5;
+
+    // Content status information for the places
+    cerence.cloudservices.domain.common.content.common.v1.ContentStatusInfo content_status_info = 6;
+
+    // Meta information about the UDE content (sorting, reasoning, search constraints, etc.)
+    GlobalMetaInfo meta_info = 7;
+
+    // A container for zero or more place elements for a waypoint. This applies to ude:get_directions
+    // intents with a "via" location, ex "Drive me to New Haven via Hartford"
+    repeated Place waypoints = 8;
+
+    // Unlike the 'waypoints' field, this field stores optional variants for each waypoint.
+    // In the example, "Take me to the office, then to the post office, and finally home.", there would be 2 items.
+    // 1. The first item in the waypoints_with_optional_variants list is for the 'office'.
+    // 2. The second item in the of waypoints_with_optional_variants list is for the 'post office'.
+    // Note that 'home' as a destination location would be set as an item in the Ude.places list 
+    repeated WaypointWithOptionalVariants waypoints_with_optional_variants = 10;
+
+    // Content status information for the waypoints
+    cerence.cloudservices.domain.common.content.common.v1.ContentStatusInfo waypoints_content_status_info = 9;
+}
+
+
+message WaypointWithOptionalVariants {
+    // A simple keyword that labels a waypoint ---- such as “office,” “post office,” “restaurant,” or “gas station.”
+    google.protobuf.StringValue label = 1;
+
+    // Optional places for the waypoint.
+    repeated Place optional_places = 2;
+
+    WaypointOperation operation = 3;
+}
+
+enum WaypointOperation {
+    WAYPOINT_OPERATION_UNSPECIFIED = 0;
+    WAYPOINT_OPERATION_ADD = 1;
+    WAYPOINT_OPERATION_DELETE = 2;
+    WAYPOINT_OPERATION_QUERY_ANCHOR = 3;
+}

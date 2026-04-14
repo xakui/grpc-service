@@ -1,0 +1,70 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.ude.v1;
+
+import "cerence/cloudservices/domain/common/content/common/v1/common_detail.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/ude/v1";
+option java_multiple_files = true;
+option java_outer_classname = "LocalSearchDetailProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.ude.v1";
+
+message LocalSearchDetail {
+  // Indicates whether this place is accessible.
+  bool accessibility = 1;
+
+  // Container for the details of the operating days and hours for this place.
+  cerence.cloudservices.domain.common.content.common.v1.OperatingHours operating_hours = 2;
+
+  // The price, if any, associated with the place.
+  string price = 3;
+
+  // 	A container for details about the rating for the place.
+  Rating rating = 4;
+
+  // Indicates whether there are restrooms.
+  bool restrooms = 5;
+
+  // Description of wifi availability.
+  string wifi = 6;
+
+  // The identification string for this place in Yelp.
+  string yelp_id = 7;
+
+  // A list of Yelp categories with the Yelp code and title.
+  repeated cerence.cloudservices.domain.common.content.common.v1.Category yelp_categories = 8;
+}
+
+
+message Rating {
+  // The number of ratings.
+  uint32 count = 1;
+
+  // The average rating, normalized to 0-5 scale
+  double average = 2;
+
+  // Attribution information.
+  cerence.cloudservices.domain.common.content.common.v1.Attribution attribution = 3;
+}
+
+

@@ -1,0 +1,157 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.common.v1;
+
+
+option go_package = "cerence/cloudservices/api/common/v1";
+option java_multiple_files = false;
+option java_outer_classname = "InterpretationProto";
+option java_package = "com.cerence.cloudservices.api.common.v1";
+
+message Interpretations {
+  // n-best results
+  repeated Interpretation contextualized = 1;
+
+  ChunkInfo chunk_info = 2;
+}
+
+message Interpretation {
+  string id = 1;
+
+  SemanticsVersion current_version = 2;
+
+  string based_on_input_result_id = 3;
+
+  TopLevelConcept concept_tree = 4;
+}
+
+message ChunkInfo {
+  // Current chunk id
+  int32 current = 1;
+
+  // True if this is the last chunk
+  bool is_last = 2;
+}
+
+message SemanticsVersion {
+  // Name of the NLU project whose semantic specs we're using
+  string nlu_project = 1;
+
+  // MAJOR version of the NLU semantic spec (for the project) being used
+  string major_version = 2;
+}
+
+message TopLevelConcept {
+  oneof concept {
+    TopLevelOperator top_level_operator = 1;
+
+    Intent intent = 2;
+
+    SimpleIntent simple_intent = 3;
+  }
+}
+
+message TopLevelOperator {
+  // Allowed types are specified in the semantic spec
+  string type = 1;
+
+  repeated TopLevelConcept operands = 2;
+}
+
+
+message Intent {
+  string type = 1;
+
+  repeated SubLevelConcept sub_concepts = 2;
+
+  LiteralInfo literal = 3;
+
+  Mode mode = 4;
+
+  string id = 5;
+}
+
+enum Mode {
+  MODE_UNSPECIFIED = 0;
+  MODE_NONE = 1;
+  MODE_GAS_STATION_FINDER = 2;
+  MODE_RESTAURANT = 3;
+  MODE_PARKING_FINDER = 4;
+  MODE_CHARGING_STATION_FINDER = 5;
+  MODE_TRAFFIC = 6;
+  MODE_HOTEL = 7;
+}
+
+message SubLevelConcept {
+  oneof concept {
+    SubLevelOperator sub_level_operator = 1;
+
+    Mention mention = 2;
+  }
+}
+
+message SubLevelOperator {
+  // Allowed types are specified in the semantic spec
+  string type = 1;
+
+  repeated SubLevelConcept operands = 2;
+}
+
+message Mention {
+  // The name of the slot that leads into this mention from a higher level
+  string slot_name = 1;
+
+  // Contains the literal corresponding to this Mention
+  LiteralInfo literal = 2;
+
+  // A canonical form. Possible values are specified in the semantic spec based on the slot_name of this Mention.
+  string canonical = 3;
+
+  // Dictionary or citation form for this Mention
+  string lemma = 4;
+
+  // List of possible phonetic forms corresponding to this mention
+  repeated string phonetic_forms = 5;
+
+}
+
+message LiteralInfo {
+  // Written form (from the transcription) of this concept (formatted)
+  string formatted = 1;
+}
+
+message SimpleIntent {
+  string type = 1;
+
+  LiteralInfo literal = 2;
+
+  string id = 3;
+
+  repeated SimpleMention mentions = 4;
+}
+
+message SimpleMention {
+  // The name of the slot that leads into this mention from a higher level
+  string slot_name = 1;
+}
+

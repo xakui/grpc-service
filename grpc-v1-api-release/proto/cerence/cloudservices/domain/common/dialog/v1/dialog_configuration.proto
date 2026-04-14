@@ -1,0 +1,73 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.dialog.v1;
+
+
+option go_package = "cerence/cloudservices/domain/common/dialog/v1";
+option java_multiple_files = true;
+option java_package = "com.cerence.cloudservices.domain.common.dialog.v1";
+option java_outer_classname = "DialogConfigurationProto";
+
+message Configuration {
+  // The facets map key is the name of the facet, the value is its configuration.
+  map<string, FacetConfiguration> facets = 1;
+}
+
+message FacetConfiguration {
+  // The facet name, same as the key of facets map.
+  string name = 1;
+
+  // The role of each facet that are returned in the interactions array.
+  enum FacetRole {
+    FACET_ROLE_UNSPECIFIED = 0;
+
+    // A sentence to be read by the TTS engine of the client (cloud or embedded).
+    FACET_ROLE_TTS = 1;
+
+    // A string to be rendered on the Head Unit of the car.
+    FACET_ROLE_TEXT = 2;
+
+    // A binary payload such as a wave form.
+    FACET_ROLE_MEDIAFILE = 3;
+
+    // Facets not destined to be reported to the end user.
+    FACET_ROLE_LOG = 4;
+
+    // Conveys data to be rendered on a GUI. Client GUI is an advanced dialog topic.
+    FACET_ROLE_DISPLAY = 5;
+
+    // A facet that was created for particular usage.
+    // The interpretation must be agreed between the dialog developer and the receiving client.
+    FACET_ROLE_CUSTOM = 6;
+  }
+  FacetRole role = 2;
+
+  //The output type that will be generated for the facet.
+  enum ContentType {
+    CONTENT_TYPE_UNSPECIFIED = 0;
+    CONTENT_TYPE_STRING = 1;
+    CONTENT_TYPE_JSON_OBJECT = 2;
+    CONTENT_TYPE_BYTES = 3;
+  }
+  ContentType content_type = 3;
+}

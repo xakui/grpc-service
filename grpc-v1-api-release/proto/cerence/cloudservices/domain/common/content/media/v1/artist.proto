@@ -1,0 +1,58 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.media.v1;
+
+import "cerence/cloudservices/domain/common/content/media/v1/visual_content.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/genres.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/spotify.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/amazon_music.proto";
+import "cerence/cloudservices/domain/common/content/media/v1/apple_music.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/media/v1";
+option java_multiple_files = true;
+option java_outer_classname = "ArtistProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.media.v1";
+
+
+
+message Artist {
+  ArtistBaseInfo base_info=1;
+
+  repeated Genre genres=2;
+
+  repeated VisualContent media=3;
+
+  oneof metadata{
+    SpotifyMetadata spotify_metadata=4;
+
+    AmazonMusicMetadata amazon_music_metadata=5;
+
+    AppleMusicMetadata apple_music_metadata=6;
+  }
+}
+
+message ArtistBaseInfo {
+  string id=1;
+
+  string name=2;
+}

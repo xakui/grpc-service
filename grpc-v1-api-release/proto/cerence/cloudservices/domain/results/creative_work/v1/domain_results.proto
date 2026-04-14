@@ -1,0 +1,43 @@
+// Copyright © 2024 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax="proto3";
+
+package cerence.cloudservices.domain.results.creative_work.v1;
+
+import "cerence/cloudservices/domain/common/dialog/v1/dialog_interaction.proto";
+import "cerence/cloudservices/api/services/content/v1/content_api.proto";
+
+option go_package = "cerence/cloudservices/domain/results/creative_work/v1";
+option java_multiple_files = true;
+option java_outer_classname = "CreativeWorkDomainResultsProto";
+option java_package = "com.cerence.cloudservices.domain.results.creative_work.v1";
+
+// The Creative Work response
+message CreativeWorkResponse {
+  // The content id used to poll content
+  string content_id = 1;
+
+  cerence.cloudservices.api.services.content.v1.ContentType content_type = 2;
+
+  cerence.cloudservices.domain.common.dialog.v1.Interaction interaction = 3;
+}
+
+

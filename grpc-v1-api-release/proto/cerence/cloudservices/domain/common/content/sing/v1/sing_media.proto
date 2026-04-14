@@ -1,0 +1,72 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+package cerence.cloudservices.domain.common.content.sing.v1;
+
+option java_multiple_files = true;
+option java_outer_classname = "SingMediaProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.sing.v1";
+option go_package = "cerence/cloudservices/domain/common/content/sing/v1";
+
+import "cerence/cloudservices/domain/common/content/sing/v1/sing_prompt.proto";
+
+//The media object to be presented to the user.
+message SingMedia {
+  //Second in the song where to start the reproduction
+  float seek = 1;
+  //For how long the media/song will be played. If -1, it should be played until the end
+  float duration = 2;
+  //If there is something to read before the song/media is played, it will be here.
+  DialogPrompt dialog_interaction = 3;
+  //For a single media, multiple contents can be found. Actually two, one with lead vocals and one without lead vocals
+  repeated MediaContent media_content = 4;
+  //Name of the song to be played
+  string song_name = 5;
+  //List of artists/groups that perfom the song
+  repeated string artist_name = 6;
+  //Id of the song
+  string media_id = 7;
+}
+
+message MediaContent {
+  //Type of the media
+  MediaType media_type = 1;
+  //The media could be available from different sources. So far only HTTP but in the future other sources may be available
+  oneof source{
+    HttpContent http_content = 2;
+  }
+}
+
+message HttpContent {
+  SongFormat song_format = 1;
+  string url = 2;
+}
+
+enum SongFormat {
+  SONG_FORMAT_UNSPECIFIED = 0;
+  SONG_FORMAT_MP4 = 1;
+}
+
+enum MediaType {
+  MEDIA_TYPE_UNSPECIFIED = 0;
+  MEDIA_TYPE_ORIGINAL = 1;
+  MEDIA_TYPE_WITHOUT_LEAD_VOCALS = 2;
+}

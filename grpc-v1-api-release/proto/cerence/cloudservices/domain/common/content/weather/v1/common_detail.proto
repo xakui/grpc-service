@@ -1,0 +1,453 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.weather.v1;
+
+import "cerence/cloudservices/domain/common/content/common/v1/common_detail.proto";
+
+import "google/type/latlng.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/weather/v1";
+option java_multiple_files = true;
+option java_outer_classname = "CommonDetailProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.weather.v1";
+
+message LocationV1 {
+  //  A set of elements that describe the geography of a location.
+  google.type.LatLng geo_position = 1;
+
+  //  The address for the location.
+  AddressV1 address = 2;
+
+  //  An element that contains one or more value/language pairs related
+  //  to the location name.
+  repeated cerence.cloudservices.domain.common.content.common.v1.Pronunciation name_pronunciation = 3;
+
+  string name = 4;
+}
+
+message AddressV1 {
+  // The house number.
+  string house_number = 1;
+
+  // The street name.
+  string street = 2;
+
+  // The city.
+  string city = 3;
+
+  // The district. Subdivision of a city.
+  string district = 4;
+
+  // The county code.
+  string county_code = 5;
+
+  // The state code.
+  string state_code = 6;
+
+  // The postal code. Format varies by country.
+  string postal_code = 7;
+
+  // An ISO 3166 country code as defined by http://www.iso.org/iso/country_codes/iso_3166_code_lists/country_names_and_code_elements.htm.
+  string country_code = 8;
+
+  // The name of the nearest cross street.
+  string cross_street_first = 9;
+
+  // The name of the nearest cross street intersection.
+  string cross_street_second = 10;
+
+  // Full text listing of the address.
+  string address_label = 11;
+
+  // The localized country name.
+  string country_name = 12;
+
+  // The localized state name. For a US location, this is the two-digit abbreviation.
+  string state = 13;
+
+  // The localized county name.
+  string county = 14;
+
+  // 	An element that contains one or more value/language pairs related to the street address.
+  cerence.cloudservices.domain.common.content.common.v1.Pronunciation street_pronunciation = 15;
+
+  // An element that contains one or more value/language pairs related to the district name.
+  cerence.cloudservices.domain.common.content.common.v1.Pronunciation district_pronunciation = 16;
+
+  // An element that contains one or more value/language pairs related to the city name.
+  cerence.cloudservices.domain.common.content.common.v1.Pronunciation city_pronunciation = 17;
+
+  // An element that contains one or more value/language pairs related to the county name.
+  cerence.cloudservices.domain.common.content.common.v1.Pronunciation county_pronunciation = 18;
+
+  // An element that contains one or more value/language pairs related to the state name.
+  cerence.cloudservices.domain.common.content.common.v1.Pronunciation state_pronunciation = 19;
+
+  // An element that contains one or more value/language pairs related to the country name.
+  cerence.cloudservices.domain.common.content.common.v1.Pronunciation country_pronunciation = 20;
+}
+
+// High and low measurements
+message MeasurementRange {
+  // The highest value for the measurement.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement high = 1;
+
+  // The lowest value for the measurement.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement low = 2;
+}
+
+// The UV index, including description, for the location.
+message UV {
+  // The UV index for the location.
+  int32 index = 1;
+
+  // Text associated with the UV index
+  string text = 2;
+}
+
+// The id number of the weather condition icon.
+enum WeatherIconId {
+  // No value has been specified.
+  WEATHER_ICON_ID_UNSPECIFIED = 0;
+
+  WEATHER_ICON_ID_RESERVED_UNKNOWN = 1;
+
+  // Intermittent Clouds, Mostly Cloudy
+  WEATHER_ICON_ID_ID1 = 2;
+
+  // Sunny
+  // Clear
+  WEATHER_ICON_ID_ID2 = 3;
+
+  // Mostly Sunny
+  // Mostly Clear
+  WEATHER_ICON_ID_ID3 = 4;
+
+  // Partly Sunny
+  // Partly Cloudy
+  // Cloudy
+  WEATHER_ICON_ID_ID4 = 5;
+
+  // Hazy Sunshine
+  // Hazy Moonlight
+  WEATHER_ICON_ID_ID5 = 6;
+
+  // Cloudy
+  // Dreary (Overcast)
+  // Overcast
+  WEATHER_ICON_ID_ID6 = 7;
+
+  // Fog
+  // Heavy Fog
+  // Extra-Heavy Dense Fog
+  WEATHER_ICON_ID_ID7 = 8;
+
+  // Smoke
+  // Dense Smoke
+  WEATHER_ICON_ID_ID8 = 9;
+
+  // Freezing Rain
+  // Icing Rain
+  // Light Icing Rain or Icing Drizzle
+  WEATHER_ICON_ID_ID9 = 10;
+
+  // Ice
+  // Hail
+  // Light Wet Snow
+  // Wet Snow
+  // Wet Snow Showers
+  WEATHER_ICON_ID_ID10 = 11;
+
+  // Sleet
+  WEATHER_ICON_ID_ID12 = 12;
+
+  // Rain Snow
+  WEATHER_ICON_ID_ID13 = 13;
+
+  // Showers
+  // Light Rain
+  // Rain
+  // Heavy Rain
+  // Moderate Rain
+  // Light Moderate Rain
+  // Moderate to Heavy Rain
+  // Heavy Rain to Storm
+  // Storm to Heavy Storm
+  // Heavy to Severe Storm
+  WEATHER_ICON_ID_ID14 = 14;
+
+  // Mostly Cloudy w/Showers
+  // Partly Sunny w/Showers
+  // Partly Cloudy w/ Showers
+  WEATHER_ICON_ID_ID15 = 15;
+
+  // Thunderstorms
+  // Storms
+  // T-Showers
+  // Heavy Thunderstorm w/Hail
+  // Thunderstorm w/Snow
+  // Heavy Storm
+  // Thundershower
+  // Storm
+  WEATHER_ICON_ID_ID16 = 16;
+
+  // Mostly Cloudy w/T-Storms
+  // Partly Cloudy w/T-Storms
+  WEATHER_ICON_ID_ID17 = 17;
+
+  // Snow
+  // Snow Showers
+  // Light Snow
+  // Snow Flurry
+  // Heavy Snow
+  // Moderate Snow
+  // Light to Moderate Snow
+  // Moderate to Heavy Snow
+  // Heavy Snow to Snowstorm
+  // Snowstorm
+  // Flurries
+  // Mostly Cloudy w/Snow
+  WEATHER_ICON_ID_ID18 = 18;
+
+  // Mostly Cloudy w/Flurries
+  // Partly Sunny w/Flurries
+  // Mostly Cloudy w/Snow
+  WEATHER_ICON_ID_ID19 = 29;
+
+  // Windy
+  WEATHER_ICON_ID_ID20 = 20;
+
+  // Tornado
+  WEATHER_ICON_ID_ID26 = 21;
+
+  // Dust Storm
+  // Dust
+  // Sand Storm
+  // Sand
+  WEATHER_ICON_ID_ID27 = 22;
+
+  // Haze
+  // Moderate Haze
+  // Severe Haze
+  // Hazardous Haze
+  WEATHER_ICON_ID_ID28 = 23;
+
+  // Dense Fog
+  // Heavy Dense Fog
+  WEATHER_ICON_ID_ID51 = 52;
+
+  // Hot
+  WEATHER_ICON_ID_ID58 = 59;
+
+  // Cold
+  WEATHER_ICON_ID_ID59 = 60;
+
+  // Severe Thunderstorms
+  WEATHER_ICON_ID_ID60 = 61;
+
+  // Unknown
+  WEATHER_ICON_ID_UNKNOWN = 63;
+}
+
+// Specifies the severity of the weather phenomenon.
+enum Severity {
+  SEVERITY_UNSPECIFIED = 0;
+  SEVERITY_NOT_APPLICABLE = 1;
+  SEVERITY_LIGHT = 2;
+  SEVERITY_MODERATE = 3;
+  SEVERITY_HEAVY = 4;
+}
+
+// Specifies the coverage of cloud for sky condition.
+enum CloudCoverage {
+  CLOUD_COVERAGE_UNSPECIFIED = 0;
+  CLOUD_COVERAGE_NOT_APPLICABLE = 1;
+  CLOUD_COVERAGE_CLEAR = 2;
+  CLOUD_COVERAGE_MOSTLY_CLEAR = 3;
+  CLOUD_COVERAGE_PARTLY_CLOUDY = 4;
+  CLOUD_COVERAGE_CLOUDY = 5;
+  CLOUD_COVERAGE_OVERCAST = 6;
+}
+
+// Defines the weather phenomenon.
+enum WeatherCondition {
+  WEATHER_CONDITION_UNSPECIFIED = 0;
+  WEATHER_CONDITION_NOT_APPLICABLE = 1;
+  WEATHER_CONDITION_HOT = 2;
+  WEATHER_CONDITION_HUMID = 3;
+
+  WEATHER_CONDITION_WET_SNOW = 4;
+  WEATHER_CONDITION_WET_SNOW_SHOWER = 5;
+  WEATHER_CONDITION_SNOW = 6;
+  WEATHER_CONDITION_SNOW_SHOWER = 7;
+  WEATHER_CONDITION_THUNDERSNOW = 8;
+  WEATHER_CONDITION_HAIL = 9;
+  WEATHER_CONDITION_HAIL_SHOWER = 10;
+  WEATHER_CONDITION_HAIL_STORM = 11;
+  WEATHER_CONDITION_SLEET = 12;
+  WEATHER_CONDITION_GRAUPEL = 13;
+  WEATHER_CONDITION_BLIZZARD = 14;
+
+  WEATHER_CONDITION_DRIZZLE = 15;
+  WEATHER_CONDITION_RAIN_SHOWER = 16;
+  WEATHER_CONDITION_RAIN = 17;
+  WEATHER_CONDITION_THUNDERSTORM = 18;
+  WEATHER_CONDITION_FREEZING_DRIZZLE = 19;
+  WEATHER_CONDITION_FREEZING_RAIN = 20;
+
+  WEATHER_CONDITION_BREEZE = 21;
+  WEATHER_CONDITION_GALE = 22;
+  WEATHER_CONDITION_WINDSTORM = 23;
+  WEATHER_CONDITION_TORNADO = 24; //cyclone
+  WEATHER_CONDITION_TROPICAL_CYCLONE = 25;
+  WEATHER_CONDITION_SAND_STORM = 26;
+  WEATHER_CONDITION_DUST_STORM = 27;
+  WEATHER_CONDITION_FOG = 28;
+  WEATHER_CONDITION_MIST = 29;
+  WEATHER_CONDITION_SMOKE = 30;
+  WEATHER_CONDITION_HAZE = 31;
+}
+
+// Weather icon for the conditions or forecast.
+message Icon {
+  // The id number of the weather condition.
+  WeatherIconId id = 1 [deprecated = true];
+
+  // If the value is "true", this is the daytime weather condition. 
+  // If the value is "false", this is the nighttime weather condition.
+  bool day_time = 2;
+
+  // A phrase that describes the weather condition.
+  string phrase = 3;
+
+  // A parameter that describes weather phenomenon.
+  WeatherCondition weather_condition = 4;
+
+  // A parameter that specifies the severity of the weather phenomenon
+  Severity severity = 5;
+
+  // A parameter that specifies the cloud conditions in sky
+  CloudCoverage cloud_coverage = 6;
+}
+
+// The direction and speed of the wind.
+message Wind {
+  // The angle from which the wind is blowing, from 0 to 360 degrees,
+  // where 0 or 360 represents north.
+  int32 direction = 1;
+
+  // The direction of the wind.
+  WindDirectionCode direction_code = 2;
+
+  // The strength of the wind as an integer, based on the
+  // Beaufort Wind Scale.
+  int32 strength_code = 3;
+
+  //Information about the speed of the wind.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement speed = 4;
+}
+
+// The direction of the wind.
+enum WindDirectionCode {
+  WIND_DIRECTION_CODE_UNSPECIFIED = 0;
+  WIND_DIRECTION_CODE_RESERVED_UNKNOWN = 1;
+  WIND_DIRECTION_CODE_N = 2;
+  WIND_DIRECTION_CODE_NNE = 3;
+  WIND_DIRECTION_CODE_NE = 4;
+  WIND_DIRECTION_CODE_ENE = 5;
+  WIND_DIRECTION_CODE_E = 6;
+  WIND_DIRECTION_CODE_ESE = 7;
+  WIND_DIRECTION_CODE_SE = 8;
+  WIND_DIRECTION_CODE_SSE = 9;
+  WIND_DIRECTION_CODE_S = 10;
+  WIND_DIRECTION_CODE_SSW = 11;
+  WIND_DIRECTION_CODE_SW = 12;
+  WIND_DIRECTION_CODE_WSW = 13;
+  WIND_DIRECTION_CODE_W = 14;
+  WIND_DIRECTION_CODE_WNW = 15;
+  WIND_DIRECTION_CODE_NW = 16;
+  WIND_DIRECTION_CODE_NNW = 17;
+}
+
+// The precipitation for the forecast period.
+message Precipitation {
+  //The probability of precipitation, as a percentage.
+  int32  probability = 1;
+
+  //The probability of rain, as a percentage.
+  int32  rain = 2;
+
+  //The probability of snow, as a percentage.
+  int32  snow = 3;
+
+  //The probability of precipitation, as a percentage.
+  int32  ice = 4;
+
+  // The amount of precipitation.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement amount = 5;
+
+  // The amount of snow.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement snow_amount = 6;
+
+  // The amount of rain.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement rain_amount = 7;
+}
+
+// The weather information including the icon appropriate for 
+// the day or night time period.
+message DayNight {
+  // Weather icon
+  Icon icon = 1;
+
+  // The precipitation in the forecast.
+  Precipitation precipitation = 2;
+
+  // The percent of the sky that is covered with clouds.
+  int32 cloud_cover = 3;
+
+  // The direction and speed of the wind.
+  Wind wind = 4;
+
+  // The atmospheric pressure.
+  cerence.cloudservices.domain.common.content.common.v1.Measurement pressure = 5;
+
+  // A text-to-speech (TTS) string that describes the weather conditions.
+  string tts = 6;
+}
+
+// A level for the humidity.
+enum HumidityCode {
+  HUMIDITY_CODE_UNSPECIFIED = 0;
+  HUMIDITY_CODE_RESERVED_UNKNOWN = 1;
+  HUMIDITY_CODE_VERY_DRY = 2;
+  HUMIDITY_CODE_DRY = 3;
+  HUMIDITY_CODE_COMFORTABLE = 4;
+  HUMIDITY_CODE_WET = 5;
+  HUMIDITY_CODE_VERY_WET = 6;
+  HUMIDITY_CODE_UNCOMFORTABLE = 7;
+}
+
+// The coordinates of the center of the search.
+message WeatherSearchCenter {
+  google.type.LatLng geo_position = 1;
+}

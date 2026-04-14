@@ -1,0 +1,42 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.common.v1;
+
+import "cerence/cloudservices/api/common/v1/personal_assistant_context.proto";
+
+import "google/protobuf/struct.proto";
+
+option go_package = "cerence/cloudservices/api/common/v1";
+option java_multiple_files = false;
+option java_outer_classname = "PersonalAssistantRequestProto";
+option java_package = "com.cerence.cloudservices.api.common.v1";
+
+message PersonalAssistantRequest {
+  PersonalAssistantContext personal_assistant_context = 1;
+
+  // Client returning status about actions executed in previous step. Would not be used at the start of a dialog.
+  repeated google.protobuf.Struct actions = 2;
+
+  // Customer specific information (for example special headers)
+  google.protobuf.Struct custom = 3;
+}

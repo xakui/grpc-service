@@ -1,0 +1,67 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.weather.v1;
+
+import "cerence/cloudservices/domain/common/content/weather/v1/common_detail.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/weather/v1";
+option java_multiple_files = true;
+option java_outer_classname = "DailyForecastProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.weather.v1";
+
+message DailyForecast {
+  // The date for the forecast. The format is YYYY-MM-DD, 
+  // ex  "2016-12-31"
+  string date = 1;
+
+  // The day of the week, localized according to the requested language.
+  string day_of_week = 2;
+
+  // The time of the sunrise for this day. The format is hh:mm:ss 
+  // using a 24-hour clock, ex "07:04:37"
+  string sunrise = 3;
+
+  // The time of the sunset for this day. The format is hh:mm:ss 
+  // using a 24-hour clock, ex "20:38:48" 
+  string sunset = 4;
+
+  // Temperature information, including highs and lows 
+  // and unit of measurement.
+  MeasurementRange temperature = 5;
+
+  // Temperature information, including highs and lows 
+  // and unit of measurement. 
+  MeasurementRange feels_like = 6;
+
+  // The UV index, with description, for the location.
+  UV uv = 7;
+
+  // The weather information for the day portion.
+  DayNight day = 8;
+
+  // The weather information for the night portion.  
+  DayNight night = 9;
+
+  // The precipitation for the day.
+  Precipitation precipitation = 10;
+}

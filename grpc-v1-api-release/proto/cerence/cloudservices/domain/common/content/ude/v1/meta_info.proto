@@ -1,0 +1,194 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.domain.common.content.ude.v1;
+
+import "cerence/cloudservices/domain/common/content/ude/v1/provenance.proto";
+
+option go_package = "cerence/cloudservices/domain/common/content/ude/v1";
+option java_multiple_files = true;
+option java_outer_classname = "MetaInfoProto";
+option java_package = "com.cerence.cloudservices.domain.common.content.ude.v1";
+
+//Meta information about the overall list of UDE results
+message GlobalMetaInfo {
+  // Explicit concepts. i.e. part of the user request
+  ConstraintGroup explicit = 1;
+
+  // Implicit concepts. i.e. inferred by the reasoning engine or preference learning
+  ConstraintGroup implicit = 2;
+
+  // Sorting criteria. Order by priority
+  repeated Sorting sorting = 3;
+
+  // Present if the request was processed by Look
+  LookMetaInfo look = 4;
+
+  message ConstraintGroup {
+    // 'What' to search for. E.g. business categories, business names, products, etc.
+    MatchGroup main_concepts = 1;
+
+    // How to rank the results. E.g. price modifier, amenities, plug types, etc.
+    MatchGroup supplementary_concepts = 2;
+  }
+
+  message MatchGroup {
+    // For global meta info: the criteria matched in all results
+    // For place meta info: the criteria which are matching a given place
+    repeated Constraint full_match = 1;
+
+    // For global meta info: indicates that at least one of the results matches the criteria
+    // For place meta info: not used
+    repeated Constraint partial_match = 2;
+
+    // For global meta info: indicates that none of the results match the criteria
+    // For place meta info: the criteria which are not matching a given place
+    repeated Constraint no_match = 3;
+  }
+
+  message Constraint {
+    // Key for this criteria. Aligned with the NLU spec (slot types)
+    string key = 1;
+
+    // Comparator for this criteria.
+    Operator operator = 2;
+
+    // Value of this criteria. Multiple values should be considered as disjunctions.
+    // E.g. ["italian_restaurant", "greek_restaurant"] means either Italian or Greek restaurant.
+    repeated string values = 3;
+
+    // Populated if the main constraint was not satisfied, and a fallback was used.
+    repeated Constraint fallbacks = 4;
+
+    // Set to true if a matching constraint actually "demote" results.
+    // I.e. a matching POI will be ranked bellow a non-matching POI.
+    bool negative = 5;
+
+    // Optional, for implicit or fallback constraints only.
+    ConstraintSource source = 6;
+
+    enum ConstraintSource {
+      // No value has been specified
+      CONSTRAINT_SOURCE_UNSPECIFIED = 0;
+
+      // Used for return value only. Represents value unknown in this version
+      CONSTRAINT_SOURCE_RESERVED_UNKNOWN = 1;
+
+      // Similarity constraint. e.g. cuisine similarity or brand similarity
+      CONSTRAINT_SOURCE_SIMILARITY = 2;
+
+      // Product to business category mapping. e.g. preferred brand or preferred category
+      CONSTRAINT_SOURCE_PRODUCT_MAPPING = 3;
+
+      // Preference constraint. e.g. preferred brand or preferred category
+      CONSTRAINT_SOURCE_PREFERENCE = 4;
+
+    }
+  }
+
+  enum Sorting {
+    // No value has been specified
+    SORTING_UNSPECIFIED = 0;
+
+    // Used for return value only. Represents value unknown in this version
+    SORTING_RESERVED_UNKNOWN = 1;
+
+    // Default sorting, as provided by the content provider
+    SORTING_DEFAULT = 2;
+    // Sorted by distance. Either from the car position or the search center for anchored search.
+    SORTING_DISTANCE = 3;
+    // Sorted by price.
+    SORTING_PRICE = 4;
+    // Sorted by quality or rating
+    SORTING_QUALITY = 5;
+    // Sorted by popularity
+    SORTING_POPULARITY = 6;
+
+    //Sorted by category. I.e. the main sorting criteria is category, for request with multiple categories
+    SORTING_CATEGORY = 10;
+    //Sorted by amenity. E.g. POI with ATM first, then POIs without ATM.
+    SORTING_AMENITY = 11;
+    //Sorted by plug types
+    SORTING_PLUG_TYPE = 12;
+    //Sorted by fuel types
+    SORTING_FUEL_TYPE = 13;
+    //Sorted by payment types
+    SORTING_PAYMENT_TYPE = 14;
+    //Sorted by availability (for parking only)
+    SORTING_AVAILABILITY = 15;
+
+    //Sorted by preferred brand. I.e. user preferred brands are first.
+    SORTING_PREFERENCE_BRAND = 100;
+    //Sorted by category. I.e. user preferred category or cuisine types are first.
+    SORTING_PREFERENCE_CATEGORY = 101;
+  }
+
+  // Information specific to look request. The presence of this element indicates that this request was processed by Look
+  message LookMetaInfo {
+
+    // Indicates the content used in the Look processing
+    repeated Modality modalities = 1;
+
+    // Indicates the location used to search for POI.
+    // The information may have been part of the request, or it may have been set by the Look service.
+    // This value may be different from the value in the NLU response; it represents what the Look service applied to its search.
+    RelativeLocation relative_location = 2;
+
+    enum Modality {
+      // No value has been specified
+      MODALITY_UNSPECIFIED = 0;
+
+      // Used for return value only. Represents value unknown in this version
+      MODALITY_RESERVED_UNKNOWN = 1;
+
+      // Indicates that sensor data with the head-pose, or eye-tracking was used
+      MODALITY_GAZE = 2;
+      // Indicates the heading was used with the request
+      MODALITY_CAR_HEADING = 3;
+    }
+
+    enum RelativeLocation {
+      // No value has been specified
+      RELATIVE_LOCATION_UNSPECIFIED = 0;
+
+      // Used for return value only. Represents value unknown in this version.
+      RELATIVE_LOCATION_RESERVED_UNKNOWN = 1;
+
+      RELATIVE_LOCATION_PANORAMA = 2;
+      RELATIVE_LOCATION_LEFT = 3;
+      RELATIVE_LOCATION_RIGHT = 4;
+      RELATIVE_LOCATION_FRONT = 5;
+      RELATIVE_LOCATION_FRONT_LEFT = 6;
+      RELATIVE_LOCATION_FRONT_RIGHT = 7;
+      RELATIVE_LOCATION_BEHIND = 8;
+      RELATIVE_LOCATION_BEHIND_LEFT = 9;
+      RELATIVE_LOCATION_BEHIND_RIGHT = 10;
+    }
+  }
+}
+
+//Meta information about a specific POI
+message PlaceMetaInfo {
+  GlobalMetaInfo.ConstraintGroup explicit = 1;
+
+  GlobalMetaInfo.ConstraintGroup implicit = 2;
+}

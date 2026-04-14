@@ -1,0 +1,149 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.services.logging.v1;
+
+import "cerence/cloudservices/api/services/logging/v1/diagnostic.proto";
+
+import "google/api/field_behavior.proto";
+import "google/protobuf/wrappers.proto";
+import "google/rpc/status.proto";
+
+option go_package = "cerence/cloudservices/api/services/logging/v1";
+option java_multiple_files = true;
+option java_outer_classname = "LoggingApiProto";
+option java_package = "com.cerence.cloudservices.api.services.logging.v1";
+
+// Service that implements the Cerence API for logging requests
+service LoggingService {
+
+  // Performs a log session request.
+  rpc LogSession (LogSessionRequest) returns (stream LogSessionResponse);
+}
+
+// The top-level message sent by the client for the 'LogSession' method.
+message LogSessionRequest {
+  // A string that uniquely identifies the user making the request. The value must not be empty and must have a maximum size of 64 characters.
+  string user_id = 1;
+
+  // Required. The name of the component issuing the request.  The events will be logged under this name.
+  string component_name = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The events to log.
+  repeated Event events = 3;
+
+  // Other component attributes may be added here.
+  repeated Attribute attributes = 4;
+
+  // The summary information.
+  SummaryEvent summary = 5 [(google.api.field_behavior) = REQUIRED];
+
+  // The device id allows to differentiate between devices. The value must not be empty and must have a maximum size of 64 characters.
+  string device_id = 6;
+}
+
+// The message returned to the client by 'LogSession'
+message LogSessionResponse {
+  // If set, returns a [google.rpc.Status][google.rpc.Status] message that
+  // specifies the status of the current response.
+
+  // google.rpc.Status messages that can be returned:
+  // | Code | Message           | Description
+  // ----------------------------------------------------------------------------------------
+  // | 3    | Invalid Argument  | Invalid request from client.
+  // | 7    | PermissionDenied  | Request with invalid subscription.
+  // | 13   | Internal          | Error from server or downstream services.
+  google.rpc.Status status = 1;
+
+  oneof log_session_result {
+    Metadata metadata = 2;
+  }
+}
+
+// The summary event is part of the common elements to be logged across all services.
+message SummaryEvent {
+  // The version of the service.
+  google.protobuf.StringValue service_version = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message Event {
+  // The name of the event.
+  string name = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The timestamp in milliseconds when this event happens.
+  google.protobuf.Int64Value timestamp = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The attributes of the event.
+  repeated Attribute attributes = 3;
+
+  // The sub-events of the event.
+  repeated Event events = 4;
+}
+
+// An attribute of the event.
+message Attribute {
+  // The name of the attribute.
+  string name = 1 [(google.api.field_behavior) = REQUIRED];
+
+  oneof value {
+    bytes binary_value = 2;
+
+    bool boolean_value = 3;
+
+    double double_value = 4; // double type here to align with Java type *double*
+
+    int64 integer_value = 5; // int64 type here to align with Java type *long*
+
+    string string_value = 6;
+  }
+
+  DataType data_type = 7 [(google.api.field_behavior) = REQUIRED];
+}
+
+enum DataType {
+  DATA_TYPE_UNSPECIFIED = 0; // Unspecified value will transform to UNKNOWN
+  DATA_TYPE_DEFAULT = 1;
+  DATA_TYPE_PRECISE_GEO_LOCATION = 2;
+  DATA_TYPE_GEO_LOCATION = 3;
+  DATA_TYPE_ASR_RESULT = 4;
+  DATA_TYPE_NLU_INTERPRETATION = 5;
+  DATA_TYPE_ASR_AUDIO_CONTENT = 6;
+  DATA_TYPE_TEXT_TO_SPEECH_CONTENT = 7;
+  DATA_TYPE_TEXT_TO_SPEECH_AUDIO = 8;
+  DATA_TYPE_USER_PROVIDED_WORD = 9;
+  DATA_TYPE_IDENTIFICATION_CONTENT = 10;
+  DATA_TYPE_TEXTUAL_CONTEXT = 11;
+  DATA_TYPE_QA_QUERY = 12;
+}
+
+// The metadata information
+message Metadata {
+  VersionInformation version_info = 1;
+
+  DiagnosticInformation diagnostic_info = 2;
+}
+
+// The version information
+message VersionInformation {
+  // The version stamp of Cerence Cloud
+  string cerence_cloud_version = 1;
+}

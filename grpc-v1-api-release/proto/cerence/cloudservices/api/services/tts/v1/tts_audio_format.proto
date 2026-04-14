@@ -1,0 +1,92 @@
+// Copyright © 2022 Cerence Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the “Software”),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+syntax = "proto3";
+
+package cerence.cloudservices.api.services.tts.v1;
+
+import "google/protobuf/descriptor.proto";
+
+
+option go_package = "cerence/cloudservices/api/services/tts/v1";
+option java_multiple_files = true;
+option java_outer_classname = "TtsAudioFormatProto";
+option java_package = "com.cerence.cloudservices.api.services.tts.v1";
+
+
+message Codec {
+  message OpusCodec {
+    enum SampleRate {
+      SAMPLE_RATE_UNSPECIFIED = 0;
+      SAMPLE_RATE_OPUS_8K = 1;
+      SAMPLE_RATE_OPUS_16K = 2;
+      SAMPLE_RATE_OPUS_24K = 3;
+      SAMPLE_RATE_OPUS_48K = 4;
+    }
+
+    SampleRate sample_rate = 1 ;
+    int32 bits_per_second = 2 ;
+  }
+  message PcmCodec {
+    enum SampleRate {
+      SAMPLE_RATE_UNSPECIFIED = 0;
+      SAMPLE_RATE_PCM_16_8K = 1;
+      SAMPLE_RATE_PCM_16_11K = 2;
+      SAMPLE_RATE_PCM_16_16K = 3;
+      SAMPLE_RATE_PCM_16_22K = 4;
+      SAMPLE_RATE_PCM_16_32K = 5;
+      SAMPLE_RATE_PCM_16_48K = 6;
+    }
+
+    SampleRate sample_rate = 1;
+  }
+  oneof codec {
+    OpusCodec opus = 1;
+    PcmCodec pcm = 2;
+  }
+}
+
+// Custom options for enum values
+extend google.protobuf.EnumValueOptions {
+  Codec codec_config = 50005;
+}
+
+enum AudioFormat {
+  AUDIO_FORMAT_UNSPECIFIED = 0;
+  AUDIO_FORMAT_OGG_OPUS_RATE_16000_CHANNELS_1 = 1 [deprecated = true, (codec_config).opus.sample_rate = SAMPLE_RATE_OPUS_16K, (codec_config).opus.bits_per_second = 28000]; // Replaced by AUDIO_FORMAT_OGG_OPUS_RATE_16000_BPS_28000_CHANNELS_1
+  AUDIO_FORMAT_OGG_OPUS_RATE_24000_CHANNELS_1 = 2 [deprecated = true, (codec_config).opus.sample_rate = SAMPLE_RATE_OPUS_24K, (codec_config).opus.bits_per_second = 28000]; // Replaced by AUDIO_FORMAT_OGG_OPUS_RATE_24000_BPS_28000_CHANNELS_1
+  AUDIO_FORMAT_L16_RATE_16000_CHANNELS_1 = 3 [(codec_config).pcm.sample_rate = SAMPLE_RATE_PCM_16_16K];
+
+  AUDIO_FORMAT_L16_RATE_8000_CHANNELS_1 = 4 [(codec_config).pcm.sample_rate = SAMPLE_RATE_PCM_16_8K];
+  AUDIO_FORMAT_L16_RATE_11025_CHANNELS_1 = 5 [(codec_config).pcm.sample_rate = SAMPLE_RATE_PCM_16_11K];
+  AUDIO_FORMAT_L16_RATE_22050_CHANNELS_1 = 6 [(codec_config).pcm.sample_rate = SAMPLE_RATE_PCM_16_22K];
+  AUDIO_FORMAT_L16_RATE_32000_CHANNELS_1 = 7 [(codec_config).pcm.sample_rate = SAMPLE_RATE_PCM_16_32K];
+  AUDIO_FORMAT_L16_RATE_48000_CHANNELS_1 = 8 [(codec_config).pcm.sample_rate = SAMPLE_RATE_PCM_16_48K];
+
+  AUDIO_FORMAT_OGG_OPUS_RATE_8000_BPS_16000_CHANNELS_1 = 9 [(codec_config).opus.sample_rate = SAMPLE_RATE_OPUS_8K, (codec_config).opus.bits_per_second = 16000];
+  AUDIO_FORMAT_OGG_OPUS_RATE_16000_BPS_28000_CHANNELS_1 = 10 [(codec_config).opus.sample_rate = SAMPLE_RATE_OPUS_16K, (codec_config).opus.bits_per_second = 28000]; // Replaces AUDIO_FORMAT_OGG_OPUS_RATE_16000_CHANNELS_1
+  AUDIO_FORMAT_OGG_OPUS_RATE_16000_BPS_32000_CHANNELS_1 = 11 [(codec_config).opus.sample_rate = SAMPLE_RATE_OPUS_16K, (codec_config).opus.bits_per_second = 32000];
+  AUDIO_FORMAT_OGG_OPUS_RATE_24000_BPS_28000_CHANNELS_1 = 12 [(codec_config).opus.sample_rate = SAMPLE_RATE_OPUS_24K, (codec_config).opus.bits_per_second = 28000]; // Replaces AUDIO_FORMAT_OGG_OPUS_RATE_24000_CHANNELS_1
+  AUDIO_FORMAT_OGG_OPUS_RATE_24000_BPS_48000_CHANNELS_1 = 13 [(codec_config).opus.sample_rate = SAMPLE_RATE_OPUS_24K, (codec_config).opus.bits_per_second = 48000];
+  AUDIO_FORMAT_OGG_OPUS_RATE_48000_BPS_48000_CHANNELS_1 = 14 [(codec_config).opus.sample_rate = SAMPLE_RATE_OPUS_48K, (codec_config).opus.bits_per_second = 48000];
+  AUDIO_FORMAT_OGG_OPUS_RATE_48000_BPS_64000_CHANNELS_1 = 15 [(codec_config).opus.sample_rate = SAMPLE_RATE_OPUS_48K, (codec_config).opus.bits_per_second = 64000];
+
+
+}
