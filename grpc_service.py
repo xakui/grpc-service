@@ -5,10 +5,11 @@
 
 """
 import json
+import base64
 
 import requests
 import grpc
-from google.protobuf.json_format import MessageToDict
+from google.protobuf.json_format import MessageToDict, ParseDict
 from cerence.cloudservices.api.services.text.v1.text_api_pb2_grpc import TextQueryServiceStub
 import cerence.cloudservices.api.services.text.v1.text_api_pb2 as text_api
 import cerence.cloudservices.api.services.text.v1.text_context_pb2 as text_context
@@ -25,6 +26,7 @@ from cerence.cloudservices.domain.results.sing.v1 import domain_results_pb2 as s
 from cerence.cloudservices.domain.results.weather.v1 import domain_results_pb2 as weather_results_pb2
 from google.type import latlng_pb2
 from google.protobuf import wrappers_pb2
+from cerence.cloudservices.api.common.v1 import interaction_history_pb2
 from collections import namedtuple
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -217,7 +219,7 @@ class GrpcClient:
             metadata.append(('cerence-session-convmgr-routing', self.session_convmgr_routing))
         return metadata
 
-    def _invoke_grpc(self, utterance, interaction_history):
+    def _invoke_grpc(self, utterance, interaction_history, session_data=None):
         self._ensure_token_validity()
 
         # req = text_api.TextQueryRequest(
@@ -244,6 +246,8 @@ class GrpcClient:
                 ),
             )
         )
+        if session_data:
+            req.session_data = session_data
 
         grpc_results = []
         try:
@@ -354,8 +358,8 @@ class GrpcClient:
 
         return grpc_result
 
-    def query(self, utterance: str, interaction_history):
-        grpc_rst, session_id = self._invoke_grpc(utterance, interaction_history)
+    def query(self, utterance: str, interaction_history, session_data=None):
+        grpc_rst, session_id = self._invoke_grpc(utterance, interaction_history, session_data)
         if not grpc_rst:
             logger.error("request", "gRPC result is empty")
             return {}
@@ -382,8 +386,8 @@ class GrpcService:
     def __init__(self):
         self.grpc_client = GrpcClient(**grpc_config)
 
-    def query(self, utterance, interaction_history):
-        grpc_results = self.grpc_client.query(utterance, interaction_history)
+    def query(self, utterance, interaction_history, session_data=None):
+        grpc_results = self.grpc_client.query(utterance, interaction_history, session_data)
         results = json.dumps(grpc_results, indent=4)
         print(results)
         return grpc_results
@@ -394,9 +398,14 @@ class GrpcService:
 def main():
     grpc_service = GrpcService()
     interaction_history = []
-    results = grpc_service.query("How many goals Liverpool got in the last match", interaction_history)
-    interaction_history = results["interactionHistory"]
-    results = grpc_service.query("are you sure", interaction_history)
+    session_data = None
+    results = grpc_service.query("How many goals Liverpool got in the last match", interaction_history, session_data)
+    session_data = base64.b64decode(results["sessionData"]) if results.get("sessionData") else None
+    interaction_history = [
+        ParseDict(ih, interaction_history_pb2.InteractionHistory())
+        for ih in results.get("interactionHistory", [])
+    ]
+    results = grpc_service.query("repeat the goals?", interaction_history, session_data)
 
 
 
