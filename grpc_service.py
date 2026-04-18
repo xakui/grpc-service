@@ -388,8 +388,6 @@ class GrpcService:
 
     def query(self, utterance, interaction_history, session_data=None):
         grpc_results = self.grpc_client.query(utterance, interaction_history, session_data)
-        results = json.dumps(grpc_results, indent=4)
-        print(results)
         return grpc_results
         logger.trace("query", f"{grpc_results}")
 
@@ -399,13 +397,15 @@ def main():
     grpc_service = GrpcService()
     interaction_history = []
     session_data = None
-    results = grpc_service.query("How many goals Liverpool got in the last match", interaction_history, session_data)
+    results = grpc_service.query("nice to have", interaction_history, session_data)
     session_data = base64.b64decode(results["sessionData"]) if results.get("sessionData") else None
     interaction_history = [
         ParseDict(ih, interaction_history_pb2.InteractionHistory())
         for ih in results.get("interactionHistory", [])
     ]
-    results = grpc_service.query("repeat the goals?", interaction_history, session_data)
+    grpc_results = grpc_service.query("how about tomorrow?", interaction_history, session_data)
+    results = json.dumps(grpc_results, indent=4)
+    print(results)
 
 
 
