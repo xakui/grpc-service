@@ -50,15 +50,6 @@ grpc_config = {
     "session_convmgr_routing": "ccb"
 }
 
-#
-# grpc_config = {
-#     "cerence_host": "cerence-ref-uat-eng-usa.prod.na.oc.cerenceapi.com:443",
-#     "oauth_host": "https://oauth-cerence-ref.prod.na.oc.cerenceapi.com",
-#     "oauth_client_id": "cerence-ref-p0001",
-#     "oauth_client_secret": "6cfa503fb17e6c21247a62cf5350c7fe5d32b982a51649d3b499870ec9b2ce7d",
-#     "oauth_scope": "access:speech"
-# }
-
 _ClientCallDetails = namedtuple(
     "_ClientCallDetails",
     ["method", "timeout", "metadata", "credentials", "wait_for_ready", "compression"]
