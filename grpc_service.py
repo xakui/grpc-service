@@ -383,20 +383,68 @@ class GrpcService:
         logger.trace("query", f"{grpc_results}")
 
 
-
-def main():
+def test01(query_01="tell me a stock price of google",
+           query_02="how about cerence"):
     grpc_service = GrpcService()
     interaction_history = []
     session_data = None
-    results = grpc_service.query("nice to have", interaction_history, session_data)
+    results = grpc_service.query(query_01, interaction_history, session_data)
     session_data = base64.b64decode(results["sessionData"]) if results.get("sessionData") else None
     interaction_history = [
         ParseDict(ih, interaction_history_pb2.InteractionHistory())
         for ih in results.get("interactionHistory", [])
     ]
-    grpc_results = grpc_service.query("how about tomorrow?", interaction_history, session_data)
+    grpc_results = grpc_service.query(query_02, interaction_history, session_data)
     results = json.dumps(grpc_results, indent=4)
     print(results)
+
+def test02(query_01="tell me a stock price of google",
+           query_02="how about cerence", use_result=False):
+    grpc_service = GrpcService()
+    interaction_history = []
+    session_data = None
+    if not use_result:
+        results = grpc_service.query(query_01, interaction_history, session_data)
+        with open("result.json", "w") as f:
+            json.dump(results, f, indent=4)
+        print(f"Results written to result.json")
+    else:
+        with open("result.json", "r") as f:
+            results = json.load(f)
+        session_data = base64.b64decode(results["sessionData"]) if results.get("sessionData") else None
+        interaction_history = [
+            ParseDict(ih, interaction_history_pb2.InteractionHistory())
+            for ih in results.get("interactionHistory", [])
+        ]
+        grpc_results = grpc_service.query(query_02, interaction_history, session_data)
+        results = json.dumps(grpc_results, indent=4)
+        print(results)
+
+def test03(query_01="tell me a stock price of google",
+           query_02="tell me more about the company", use_result=False):
+    grpc_service = GrpcService()
+    interaction_history = []
+    session_data = None
+    if not use_result:
+        results = grpc_service.query(query_01, interaction_history, session_data)
+        with open("result.json", "w") as f:
+            json.dump(results, f, indent=4)
+        print(f"Results written to result.json")
+    else:
+        with open("result.json", "r") as f:
+            results = json.load(f)
+        session_data = base64.b64decode(results["sessionData"]) if results.get("sessionData") else None
+        interaction_history = [
+            ParseDict(ih, interaction_history_pb2.InteractionHistory())
+            for ih in results.get("interactionHistory", [])
+        ]
+        grpc_results = grpc_service.query(query_02, interaction_history, session_data)
+        results = json.dumps(grpc_results, indent=4)
+        print(results)
+
+def main():
+    test03(use_result=False)
+    test03(use_result=True)
 
 
 
