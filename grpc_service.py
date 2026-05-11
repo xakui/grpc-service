@@ -36,8 +36,10 @@ import asyncio
 import datetime
 from loguru import logger
 
+# cerence-ref-uat-eng-usa.prod.na.oc.cerenceapi.com
+# cerence-ref-xuigen1-eng-usa.int.na.oc.cerenceapi.com
 grpc_config = {
-    "cerence_host": "cerence-ref-uat-eng-usa.prod.na.oc.cerenceapi.com",
+    "cerence_host": "cerence-ref-xuigen1-eng-usa.int.na.oc.cerenceapi.com",
     "cerence_port": 443,
     "oauth_token_url": "https://oauth-cerence-ref.prod.na.oc.cerenceapi.com/oauth2/token",
     "oauth_token_fallback_urls": [
@@ -250,7 +252,7 @@ class GrpcClient:
             initial_metadata = response.initial_metadata()
             session_id = next((value for key, value in initial_metadata if key == 'cerence-session-id'),
                               'unknown-session-id')
-
+            print(f"session_id: {session_id}")
         except grpc.RpcError as e:
             logger.error("_invoke_grpc", f"gRPC error: {e}")
             return [], "error-session-id"
@@ -420,31 +422,55 @@ def test02(query_01="tell me a stock price of google",
         results = json.dumps(grpc_results, indent=4)
         print(results)
 
-def test03(query_01="tell me a stock price of google",
+def test03(query_01="tell me a stock price of cerence",
            query_02="tell me more about the company", use_result=False):
     grpc_service = GrpcService()
     interaction_history = []
     session_data = None
     if not use_result:
         results = grpc_service.query(query_01, interaction_history, session_data)
-        with open("result.json", "w") as f:
+        with open("result_03.json", "w") as f:
             json.dump(results, f, indent=4)
-        print(f"Results written to result.json")
+        print(f"Results written to result_03.json")
     else:
-        with open("result.json", "r") as f:
+        with open("result_03.json", "r") as f:
             results = json.load(f)
         session_data = base64.b64decode(results["sessionData"]) if results.get("sessionData") else None
         interaction_history = [
             ParseDict(ih, interaction_history_pb2.InteractionHistory())
             for ih in results.get("interactionHistory", [])
         ]
-        grpc_results = grpc_service.query(query_02, interaction_history, session_data)
+
+        grpc_results = grpc_service.query(query_02, interaction_history, None)
+        results = json.dumps(grpc_results, indent=4)
+        print(results)
+
+def test04(query_01="tell me a stock price of cerence",
+           query_02="tell me more about the company", use_result=False):
+    grpc_service = GrpcService()
+    interaction_history = []
+    session_data = None
+    if not use_result:
+        results = grpc_service.query(query_01, interaction_history, session_data)
+        with open("result_04.json", "w") as f:
+            json.dump(results, f, indent=4)
+        print(f"Results written to result_04.json")
+    else:
+        with open("result_04.json", "r") as f:
+            results = json.load(f)
+        session_data = base64.b64decode(results["sessionData"]) if results.get("sessionData") else None
+        interaction_history = [
+            ParseDict(ih, interaction_history_pb2.InteractionHistory())
+            for ih in results.get("interactionHistory", [])
+        ]
+
+        grpc_results = grpc_service.query(query_02, interaction_history, None)
         results = json.dumps(grpc_results, indent=4)
         print(results)
 
 def main():
-    test03(use_result=False)
-    test03(use_result=True)
+    test04()
+    test04(use_result=True)
 
 
 
